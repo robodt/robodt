@@ -37,36 +37,20 @@ class Hooks extends Robodt
 		}
 	}
 
-	public function run_hook($key, $parameters = '') {
+	public function run_hook($key, $parameters = array()) {
 		if ( ! isset($this->hooks[$key])) {
 			return false;
 		}
 
-		$hooks = $this->hooks;
 		$hooks = $this->hooks[$key];
 		ksort($hooks);
 
 		foreach ($hooks as $hook) {
-			$this->execute_hook($hook['function'], $hook['class'], $parameters);
+			call_user_func_array(array($hook['class'], $hook['function']), $parameters);
 		}
 	}
 
-	private function execute_hook($function, $class, $parameters) {
-		if ( ! $class && function_exists($function)) {
-			print 'return function';
-			return $function;
-		}
-
-		if ( ! class_exists($class)) {
-			print 'class does not excist';
-			return false;
-		}
-
-		$hook = new $class();
-		return $hook->$function($parameters);
-	}
-
-	public function registered() {
+	public function registered_hooks() {
 		return $this->hooks;
 	}
 
