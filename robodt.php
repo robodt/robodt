@@ -51,21 +51,7 @@ class Robodt
 		$this->settings->set('dir.themes', 'themes');
 	}
 
-	/*
-		Create enviroments
-		- Sites
-		- Development / stage / live
-
-		Create API:
-		- Settings?
-		- Site?
-		- Tree / Navigation
-		- Status code: 200 / 404 / 500
-		- Content
-		- Metadata
-		- Settings?
-	*/
-
+	// TODO: implement
 	public function render($uri, $site = false) {
 		$this->hooks->execute('init');
 		$this->actions->execute('site.set', array($site));
