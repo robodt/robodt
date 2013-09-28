@@ -12,7 +12,7 @@ namespace Robodt;
 class Hooks extends Robodt
 {
 
-	protected $hooks;
+	public $hooks;
 
 	public function __construct() {
 		$this->hooks = array();

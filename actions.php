@@ -12,7 +12,7 @@ namespace Robodt;
 class Actions extends Robodt
 {
 
-	protected $actions;
+	public $actions;
 
 	public function __construct() {
 		$this->actions = array();

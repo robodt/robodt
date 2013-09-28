@@ -23,8 +23,8 @@ use dflydev\markdown\MarkdownParser as MarkdownParser;
 class Robodt
 {
 
-	protected $hooks;
-	protected $actions;
+	public $hooks;
+	public $actions;
 	protected $settings;
 	protected $api;
 
