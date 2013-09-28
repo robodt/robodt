@@ -7,4 +7,4 @@ It's still under some heavy development, most API's are likely to change and the
 
 More information we be available soon.
 
-(Robodt.io)[http://robodt.io/]
+[Robodt.io](http://robodt.io/)
