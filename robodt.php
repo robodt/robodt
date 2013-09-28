@@ -24,10 +24,12 @@ class Robodt
 
 	var $hooks;
 	var $actions;
+	var $settings;
 
 	function __construct() {
 		$this->hooks = new Hooks;
 		$this->actions = new Actions;
+		$this->settings = new Settings;
 
 		$this->actions->register_action('woop', 'woopwoob', __CLASS__);
 		$this->hooks->register_hook('bootstrap', 'bootstrap_bye', __CLASS__, 10);
