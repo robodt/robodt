@@ -23,7 +23,7 @@ class Settings extends Robodt
 			return false;
 		}
 
-		$settings = file_get_contents($settings, FILE_USE_INCLUDE_PATH);
+		$settings = file_get_contents($file, FILE_USE_INCLUDE_PATH);
 		$settings = str_replace(array('<?php', '<?', 'die();', 'exit();'), '', $settings);
 		$settings = json_decode($settings, true);
 
