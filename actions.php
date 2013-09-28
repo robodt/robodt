@@ -19,7 +19,7 @@ class Actions extends Robodt
 	}
 
 	public function register($key, $function, $class) {
-		$this->remove_action($key);
+		$this->remove($key);
 		$this->actions[$key] = array(
 				'function'		=> $function,
 				'class'			=> $class

@@ -26,7 +26,7 @@ class Hooks extends Robodt
 	}
 
 	public function overwrite($key, $function, $class, $priority = 10) {
-		$this->remove_hook($key);
+		$this->remove($key);
 		$this->register_hook($key, $function, $class, $priority);
 	}
 
