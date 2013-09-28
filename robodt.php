@@ -25,40 +25,36 @@ class Robodt
 	var $hooks;
 	var $actions;
 	var $settings;
+	var $api;
 
 	function __construct() {
 		$this->hooks = new Hooks;
 		$this->actions = new Actions;
 		$this->settings = new Settings;
-
-		$this->actions->register_action('woop', 'woopwoob', __CLASS__);
-		$this->hooks->register_hook('bootstrap', 'bootstrap_bye', __CLASS__, 10);
-		$this->hooks->register_hook('bootstrap', 'bootstrap_message', __CLASS__, 1);
-		$this->hooks->run_hook('bootstrap', array('world'));
-		print $this->actions->run_action('woop', array('Onniee', 'TJAKKAAAA!'));
+		$this->api = array();
 	}
 
-	public function bootstrap_message($message = 'robodt') {
-		print 'Hello, ' . $message . '!<br />';
+	/*
+		Create API:
+		- Tree / Navigation
+		- Status code: 200 / 404 / 500
+		- Content
+		- Metadata
+		- Settings?
+	*/
+
+	public function render($uri, $site) {
+		$this->hooks->run_hook('init');
 	}
 
-	public function bootstrap_bye($message = 'robodt') {
-		print 'Goobye, ' . $message . '.<br />';
-	}
+	private function get_site() {
+		$site = $_SERVER['SERVER_NAME'];
 
-	public function woopwoob($first, $second) {
-		return 'WOOOOOOOP! ' . $first . ', ' . $second . '<br />';
-	}
+		if ( ! file_exists($site)) {
+			$site = 'default';
+		}
 
-	public function API() {
-		/*
-			Create API:
-			- Tree / Navigation
-			- Status code: 200 / 404 / 500
-			- Content
-			- Metadata
-			- Settings?
-		*/
+		return $site;
 	}
 
 }
