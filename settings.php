@@ -12,9 +12,9 @@ namespace Robodt;
 class Settings extends Robodt
 {
 
-	var $settings;
+	protected $settings;
 
-	function __construct() {
+	public function __construct() {
 		$this->settings = array();
 	}
 
