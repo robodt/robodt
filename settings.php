@@ -25,12 +25,13 @@ class Settings extends Robodt
 
 		$settings = file_get_contents($settings, FILE_USE_INCLUDE_PATH);
 		$settings = str_replace(array('<?php', '<?', 'die();', 'exit();'), '', $settings);
+		$settings = json_decode($settings, true);
 
 		if ($key) {
-			$this->settings[$key];
+			$this->settings[$key] = $settings;
 		}
 
-		return json_decode($settings, true);
+		return $settings;
 	}
 
 	public function get($key) {
