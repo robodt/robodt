@@ -34,6 +34,10 @@ class Settings extends Robodt
 		return $settings;
 	}
 
+	public function set($key) {
+		// TODO: implement
+	}
+
 	public function get($key) {
 		if ( ! isset($this->settings[$key])) {
 			return false;
