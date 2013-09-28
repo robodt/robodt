@@ -29,9 +29,9 @@ class Robodt
 		$this->hooks = new Hooks;
 		$this->actions = new Actions;
 
-		$this->actions->register_action('woop', 'woopwoob', __CLASS__, 0);
-		$this->hooks->register_hook('bootstrap', 'bootstrap_bye', __CLASS__, 1, 10);
-		$this->hooks->register_hook('bootstrap', 'bootstrap_message', __CLASS__, 1, 1);
+		$this->actions->register_action('woop', 'woopwoob', __CLASS__);
+		$this->hooks->register_hook('bootstrap', 'bootstrap_bye', __CLASS__, 10);
+		$this->hooks->register_hook('bootstrap', 'bootstrap_message', __CLASS__, 1);
 		$this->hooks->run_hook('bootstrap', array('world'));
 		print $this->actions->run_action('woop', array('Onniee', 'TJAKKAAAA!'));
 	}

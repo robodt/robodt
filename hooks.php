@@ -18,17 +18,16 @@ class Hooks extends Robodt
 		$this->hooks = array();
 	}
 
-	public function register_hook($key, $function, $class, $parameters = 0, $priority = 10) {
+	public function register_hook($key, $function, $class, $priority = 10) {
 		$this->hooks[$key][$priority] = array(
 				'function'		=> $function,
-				'class'			=> $class,
-				'parameters'	=> $parameters,
+				'class'			=> $class
 			);
 	}
 
-	public function overwrite_hook($key, $function, $class, $parameters = 0, $priority = 10) {
+	public function overwrite_hook($key, $function, $class, $priority = 10) {
 		$this->remove_hook($key);
-		$this->register_hook($key, $function, $class, $parameters, $priority);
+		$this->register_hook($key, $function, $class, $priority);
 	}
 
 	public function remove_hook($key) {

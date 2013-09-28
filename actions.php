@@ -18,12 +18,11 @@ class Actions extends Robodt
 		$this->actions = array();
 	}
 
-	public function register_action($key, $function, $class, $parameters = 0) {
+	public function register_action($key, $function, $class) {
 		$this->remove_action($key);
 		$this->actions[$key] = array(
 				'function'		=> $function,
-				'class'			=> $class,
-				'parameters'	=> $parameters
+				'class'			=> $class
 			);
 	}
 
