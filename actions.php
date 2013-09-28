@@ -37,7 +37,7 @@ class Actions extends Robodt
 		if ( ! isset($this->actions[$key])) {
 			return false;
 		}
-		call_user_func_array(array($this->actions[$key]['class'], $this->actions[$key]['function']), $parameters);
+		return call_user_func_array(array($this->actions[$key]['class'], $this->actions[$key]['function']), $parameters);
 	}
 
 	public function registered_actions() {

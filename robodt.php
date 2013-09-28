@@ -33,7 +33,7 @@ class Robodt
 		$this->hooks->register_hook('bootstrap', 'bootstrap_bye', __CLASS__, 1, 10);
 		$this->hooks->register_hook('bootstrap', 'bootstrap_message', __CLASS__, 1, 1);
 		$this->hooks->run_hook('bootstrap', array('world'));
-		$this->actions->run_action('woop', array('Onniee', 'TJAKKAAAA!'));
+		print $this->actions->run_action('woop', array('Onniee', 'TJAKKAAAA!'));
 	}
 
 	public function bootstrap_message($message = 'robodt') {
@@ -45,7 +45,7 @@ class Robodt
 	}
 
 	public function woopwoob($first, $second) {
-		print 'WOOOOOOOP! ' . $first . ', ' . $second . '<br />';
+		return 'WOOOOOOOP! ' . $first . ', ' . $second . '<br />';
 	}
 
 	public function API() {
