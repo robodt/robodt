@@ -38,12 +38,12 @@ class Robodt
 		$markdown = new MarkdownParser();
 
 		// Register hooks and actions
-		$this->actions->register('set_site', 'set_site', $this);
-		$this->actions->register('render_markdown', 'transformMarkdown', $markdown);
+		$this->actions->register('site.set', 'setSite', $this);
+		$this->actions->register('request.render', 'transformMarkdown', $markdown);
 
 		// DEBUG: debug hooks, to be removed remove later on
-		$this->hooks->register('debug', 'debug_print_settings', $this, 5);
-		$this->hooks->register('debug', 'debug_print_api', $this, 1);
+		$this->hooks->register('debug', 'debugSettings', $this, 5);
+		$this->hooks->register('debug', 'debugApi', $this, 1);
 
 		// DEBUG: hard coded settings, change it!
 		$this->settings->set('dir.sites', 'sites');
@@ -64,12 +64,12 @@ class Robodt
 
 	public function render($uri, $site = false) {
 		$this->hooks->execute('init');
-		$this->actions->execute('set_site', array($site));
-		print $this->actions->execute('render_markdown', array($uri));
+		$this->actions->execute('site.set', array($site));
+		print $this->actions->execute('request.render', array($uri));
 		$this->hooks->execute('debug');
 	}
 
-	public function set_site($site = false) {
+	public function setSite($site = false) {
 		if ( ! $site) {
 			$site = $_SERVER['SERVER_NAME'];
 		}
@@ -83,14 +83,33 @@ class Robodt
 		return $site;
 	}
 
-	public function debug_print_api() {
+	private function splitFile($contents)
+	{
+		$contents = str_replace("\r", "", $contents);
+		return preg_split('![\r\n]+[-]{4,}!i', $contents);
+	}
+
+	private function parseMetadata($contents)
+	{
+		// Generate array from string
+		$metadata = array();
+		preg_match_all('/^(.+?):(.+)$/m', $contents, $metadata);
+
+		// Convert array to key value format
+		$metadata = array_combine($metadata[1], $metadata[2]);
+
+		// Trim values and return
+		return array_map('trim', $metadata);
+	}
+
+	public function debugApi() {
 		print "<h3>API</h3>\n";
 		print "<pre>\n";
 		print_r($this->api);
 		print "\n</pre><hr />";
 	}
 
-	public function debug_print_settings() {
+	public function debugSettings() {
 		print "<h3>Settings</h3>\n";
 		print "<pre>\n";
 		print_r($this->settings->get_all());
