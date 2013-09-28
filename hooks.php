@@ -42,7 +42,7 @@ class Hooks extends Robodt
 		}
 
 		$hooks = $this->hooks[$key];
-		ksort($hooks);
+		krsort($hooks);
 
 		foreach ($hooks as $hook) {
 			call_user_func_array(array($hook['class'], $hook['function']), $parameters);
