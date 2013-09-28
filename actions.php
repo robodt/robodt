@@ -18,7 +18,7 @@ class Actions extends Robodt
 		$this->actions = array();
 	}
 
-	public function register_action($key, $function, $class) {
+	public function register($key, $function, $class) {
 		$this->remove_action($key);
 		$this->actions[$key] = array(
 				'function'		=> $function,
@@ -26,20 +26,20 @@ class Actions extends Robodt
 			);
 	}
 
-	public function remove_action($key) {
+	public function remove($key) {
 		if (isset($this->actions[$key])) {
 			unset($this->actions[$key]);
 		}
 	}
 
-	public function run_action($key, $parameters = array()) {
+	public function execute($key, $parameters = array()) {
 		if ( ! isset($this->actions[$key])) {
 			return false;
 		}
 		return call_user_func_array(array($this->actions[$key]['class'], $this->actions[$key]['function']), $parameters);
 	}
 
-	public function registered_actions() {
+	public function registered() {
 		return $this->actions;
 	}
 

@@ -18,25 +18,25 @@ class Hooks extends Robodt
 		$this->hooks = array();
 	}
 
-	public function register_hook($key, $function, $class, $priority = 10) {
+	public function register($key, $function, $class, $priority = 10) {
 		$this->hooks[$key][$priority] = array(
 				'function'		=> $function,
 				'class'			=> $class
 			);
 	}
 
-	public function overwrite_hook($key, $function, $class, $priority = 10) {
+	public function overwrite($key, $function, $class, $priority = 10) {
 		$this->remove_hook($key);
 		$this->register_hook($key, $function, $class, $priority);
 	}
 
-	public function remove_hook($key) {
+	public function remove($key) {
 		if (isset($this->hooks[$key])) {
 			unset($this->hooks[$key]);
 		}
 	}
 
-	public function run_hook($key, $parameters = array()) {
+	public function execute($key, $parameters = array()) {
 		if ( ! isset($this->hooks[$key])) {
 			return false;
 		}
@@ -49,7 +49,7 @@ class Hooks extends Robodt
 		}
 	}
 
-	public function registered_hooks() {
+	public function registered() {
 		return $this->hooks;
 	}
 
