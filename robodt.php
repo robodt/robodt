@@ -36,6 +36,8 @@ class Robodt
 
 	/*
 		Create API:
+		- Settings?
+		- Site?
 		- Tree / Navigation
 		- Status code: 200 / 404 / 500
 		- Content
@@ -44,15 +46,20 @@ class Robodt
 	*/
 
 	public function render($uri, $site) {
-		$this->hooks->run_hook('init');
+		$this->hooks->execute('init');
+		$this->hooks->execute('site');
 	}
 
-	private function get_site() {
-		$site = $_SERVER['SERVER_NAME'];
+	public function set_site($site = false) {
+		if ( ! $site) {
+			$site = $_SERVER['SERVER_NAME'];
+		}
 
 		if ( ! file_exists($site)) {
 			$site = 'default';
 		}
+
+		$this->api['site'] = $site;
 
 		return $site;
 	}
