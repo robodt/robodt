@@ -42,8 +42,8 @@ class Robodt
 		$this->actions->register('request.render', 'transformMarkdown', $markdown);
 
 		// DEBUG: debug hooks, to be removed remove later on
-		$this->hooks->register('debug', 'debugSettings', $this, 5);
-		$this->hooks->register('debug', 'debugApi', $this, 1);
+		$this->hooks->register('debug', 'debugSettings', $this, 10);
+		$this->hooks->register('debug', 'debugApi', $this, 100);
 
 		// DEBUG: hard coded settings, change it!
 		$this->settings->set('dir.sites', 'sites');
@@ -52,6 +52,10 @@ class Robodt
 	}
 
 	/*
+		Create enviroments
+		- Sites
+		- Development / stage / live
+
 		Create API:
 		- Settings?
 		- Site?
@@ -83,14 +87,12 @@ class Robodt
 		return $site;
 	}
 
-	private function splitFile($contents)
-	{
+	private function splitFile($contents) {
 		$contents = str_replace("\r", "", $contents);
 		return preg_split('![\r\n]+[-]{4,}!i', $contents);
 	}
 
-	private function parseMetadata($contents)
-	{
+	private function parseMetadata($contents) {
 		// Generate array from string
 		$metadata = array();
 		preg_match_all('/^(.+?):(.+)$/m', $contents, $metadata);
