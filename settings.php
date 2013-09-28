@@ -34,8 +34,9 @@ class Settings extends Robodt
 		return $settings;
 	}
 
-	public function set($key) {
-		// TODO: implement
+	public function set($key, $value) {
+		$this->remove($key);
+		$this->settings[$key] = $value;
 	}
 
 	public function get($key) {
@@ -43,6 +44,12 @@ class Settings extends Robodt
 			return false;
 		}
 		return $this->settings[$key];
+	}
+
+	public function remove($key) {
+		if (isset($this->settings[$key])) {
+			unset($this->settings[$key]);
+		}
 	}
 
 	public function get_all() {
