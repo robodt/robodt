@@ -12,10 +12,12 @@ namespace Robodt;
 require 'hooks.php';
 require 'actions.php';
 require 'settings.php';
+require 'filemanager.php';
 
 use Robodt\Hooks;
 use Robodt\Actions;
 use Robodt\Settings;
+use Robodt\FileManager;
 
 use DirectoryIterator;
 use dflydev\markdown\MarkdownParser as MarkdownParser;
@@ -26,6 +28,7 @@ class Robodt
 	public $hooks;
 	public $actions;
 	protected $settings;
+	protected $filemanager;
 	protected $api;
 
 
@@ -33,6 +36,7 @@ class Robodt
 		$this->hooks = new Hooks;
 		$this->actions = new Actions;
 		$this->settings = new Settings;
+		$this->filemanager = new FileManager;
 		$this->api = array();
 
 		// DEBUG: hardcoded markdown parser, change it!
@@ -67,25 +71,8 @@ class Robodt
 		$content = array('.', 'sites', 'default', 'contents');
 		$content = implode(DIRECTORY_SEPARATOR, $content);
 		$content = new DirectoryIterator($content);
-		print_r($this->generateTree($content));
+		print_r($this->filemanager->generateTree($content));
 		print "\n</pre><hr />";
-	}
-
-
-	public function generateTree( DirectoryIterator $dir )
-	{
-		$data = array();
-		foreach ( $dir as $node ) {
-			if ( $node->isDir() && !$node->isDot() ) {
-				$data[$node->getFilename()] = $this->generateTree( new DirectoryIterator( $node->getPathname() ) );
-			}
-			else if ( $node->isFile() ) {
-				$data[] = $node->getFilename();
-			}
-		}
-		// $data = preg_grep('/^([^.])/', $data);
-
-		return $data;
 	}
 
 
@@ -104,23 +91,7 @@ class Robodt
 	}
 
 
-	private function splitFile($contents) {
-		$contents = str_replace("\r", "", $contents);
-		return preg_split('![\r\n]+[-]{4,}!i', $contents);
-	}
-
-
-	private function parseMetadata($contents) {
-		// Generate array from string
-		$metadata = array();
-		preg_match_all('/^(.+?):(.+)$/m', $contents, $metadata);
-
-		// Convert array to key value format
-		$metadata = array_combine($metadata[1], $metadata[2]);
-
-		// Trim values and return
-		return array_map('trim', $metadata);
-	}
+	// DEBUG FUNCTIONS
 
 
 	public function debugApi() {
