@@ -18,8 +18,6 @@ use Robodt\Hooks;
 use Robodt\Actions;
 use Robodt\Settings;
 use Robodt\FileManager;
-
-use DirectoryIterator;
 use dflydev\markdown\MarkdownParser as MarkdownParser;
 
 class Robodt
@@ -70,7 +68,7 @@ class Robodt
 	public function debug_log_html() {
 		$output = "<hr />\n";
 		foreach ($this->api['debug'] as $title => $value) {
-			$output .= "<h3>" . $title . "</h3>\n"
+			$output .= "<h3>" . $title . "</h3>\n";
 			$output .= "<pre>" . print_r($value, true) . "</pre>\n";
 		}
 		return $output;
@@ -89,9 +87,7 @@ class Robodt
 	public function requestRender($uri) {
 		print "<h3>Content Tree</h3>\n<pre>\n";
 		$content = array('.', 'sites', 'default', 'contents');
-		$content = implode(DIRECTORY_SEPARATOR, $content);
-		$content = new DirectoryIterator($content);
-		print_r($this->filemanager->generateTree($content));
+		print_r($this->filemanager->getTree($content));
 		print "\n</pre><hr />";
 	}
 

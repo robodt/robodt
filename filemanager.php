@@ -14,7 +14,16 @@ use DirectoryIterator;
 class FileManager {
 
 
-	public function generateTree( DirectoryIterator $dir )
+	public function getTree($dir) {
+		if (is_array($dir)) {
+			$dir = implode(DIRECTORY_SEPARATOR, $dir);
+		}
+		$dir = new DirectoryIterator($dir);
+		return $this->generateTree($dir);
+	}
+
+
+	private function generateTree( DirectoryIterator $dir )
 	{
 		$data = array();
 		foreach ( $dir as $node ) {
