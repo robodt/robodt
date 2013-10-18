@@ -13,6 +13,8 @@ require 'hooks.php';
 require 'actions.php';
 require 'settings.php';
 require 'filemanager.php';
+require 'meta.php';
+require 'content.php';
 
 use Robodt\Hooks;
 use Robodt\Actions;
