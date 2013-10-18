@@ -57,6 +57,16 @@ class Robodt
 	}
 
 
+	public function debug_log($key,$value) {
+		$this->api['debug']['key'] = $value;
+	}
+
+
+	public function debug() {
+		return $this->api['debug'];
+	}
+
+
 	// TODO: implement
 	public function render($uri, $site = false) {
 		$this->hooks->execute('init');
