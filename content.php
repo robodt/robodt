@@ -9,6 +9,8 @@
 
 namespace Robodt;
 
+use dflydev\markdown\MarkdownParser as MarkdownParser;
+
 class Content
 {
 

@@ -16,12 +16,6 @@ require 'filemanager.php';
 require 'meta.php';
 require 'content.php';
 
-use Robodt\Hooks;
-use Robodt\Actions;
-use Robodt\Settings;
-use Robodt\FileManager;
-use dflydev\markdown\MarkdownParser as MarkdownParser;
-
 class Robodt
 {
 
