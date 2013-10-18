@@ -57,13 +57,23 @@ class Robodt
 	}
 
 
-	public function debug_log($key,$value) {
-		$this->api['debug']['key'] = $value;
+	public function debug($title,$value) {
+		$this->api['debug'][$title] = $value;
 	}
 
 
-	public function debug() {
+	public function debug_log() {
 		return $this->api['debug'];
+	}
+
+
+	public function debug_log_html() {
+		$output = "<hr />\n";
+		foreach ($this->api['debug'] as $title => $value) {
+			$output .= "<h3>" . $title . "</h3>\n"
+			$output .= "<pre>" . print_r($value, true) . "</pre>\n";
+		}
+		return $output;
 	}
 
 
