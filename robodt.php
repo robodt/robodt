@@ -33,9 +33,6 @@ class Robodt
 		$this->filemanager = new FileManager;
 		$this->api = array();
 
-		// DEBUG: hardcoded markdown parser, change it!
-		// $markdown = new MarkdownParser();
-
 		// Register hooks and actions
 		$this->actions->register('site.set', 'setSite', $this);
 		$this->actions->register('request.render', 'requestRender', $this);
@@ -56,12 +53,12 @@ class Robodt
 	}
 
 
-	public function debug_log() {
+	public function debugOutputArray() {
 		return $this->api['debug'];
 	}
 
 
-	public function debug_log_html() {
+	public function debugOutputHtml() {
 		$output = "<hr />\n";
 		foreach ($this->api['debug'] as $title => $value) {
 			$output .= "<h3>" . $title . "</h3>\n";

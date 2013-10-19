@@ -17,4 +17,7 @@ class Content
 	// Content types
 	// Fields
 
+	// DEBUG: hardcoded markdown parser, change it!
+	// $markdown = new MarkdownParser();
+
 }
