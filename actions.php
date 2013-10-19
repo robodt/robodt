@@ -9,7 +9,7 @@
 
 namespace Robodt;
 
-class Actions extends Robodt
+class Actions
 {
 
 	public $actions;

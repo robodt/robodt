@@ -9,7 +9,7 @@
 
 namespace Robodt;
 
-class Hooks extends Robodt
+class Hooks
 {
 
 	public $hooks;
