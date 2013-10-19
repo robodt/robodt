@@ -23,19 +23,18 @@ class FileManager {
 	}
 
 
-	private function generateTree( DirectoryIterator $dir )
-	{
+	private function generateTree( DirectoryIterator $dir ) {
 		$data = array();
 		foreach ( $dir as $node ) {
 			if ( $node->isDir() && !$node->isDot() ) {
 				$data[$node->getFilename()] = $this->generateTree( new DirectoryIterator( $node->getPathname() ) );
 			}
 			else if ( $node->isFile() ) {
-				$data[] = $node->getFilename();
+				if ( substr( $node->getFilename(), 0, 1) != '.') {
+					$data[] = $node->getFilename();
+				}
 			}
 		}
-		// $data = preg_grep('/^([^.])/', $data);
-
 		return $data;
 	}
 
