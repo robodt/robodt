@@ -75,11 +75,20 @@ class Robodt
 		if ( ! $site) {
 			$site = $_SERVER['SERVER_NAME'];
 		}
-		if ( ! file_exists('./sites/' . $site)) {
+		if ( ! file_exists($this->sitePath($site))) {
 			$site = 'default';
+		}
+		if ( ! file_exists($this->sitePath($site))) {
+			die('Requested site and default fallback could not be found.');
 		}
 		$this->api['site'] = $site;
 		return $site;
+	}
+
+
+	public function sitePath($site) {
+		$site = array('.', $this->settings->get('dir.sites'), $site );
+		return implode(DIRECTORY_SEPARATOR, $site);
 	}
 
 
