@@ -36,8 +36,9 @@ class Robodt
 		$this->api = array();
 
 		// Register hooks and actions
-		$this->actions->register('site.set', 'setSite', $this);
-		$this->actions->register('request.render', 'requestRender', $this);
+		$this->hooks->register('site.set', 'setSite', $this, 10);
+		$this->hooks->register('site.set', 'loadSettings', $this, 20);
+		$this->hooks->register('request.render', 'requestRender', $this, 10);
 
 		// DEBUG: debug hooks, to be removed remove later on
 		$this->hooks->register('debug', 'debugSettings', $this, 10);
@@ -73,8 +74,8 @@ class Robodt
 	// TODO: implement
 	public function render($uri, $site = false) {
 		$this->hooks->execute('init');
-		$this->actions->execute('site.set', array($site));
-		$this->actions->execute('request.render', array($uri));
+		$this->hooks->execute('site.set', array($site));
+		$this->hooks->execute('request.render', array($uri));
 		$this->hooks->execute('debug');
 		return $this->api;
 	}
@@ -103,6 +104,11 @@ class Robodt
 		$this->api['site'] = $site;
 
 		return $site;
+	}
+
+
+	public function loadSettings() {
+		$this->api['settings'] = $this->settings->get_all();
 	}
 
 
