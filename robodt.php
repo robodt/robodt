@@ -51,27 +51,6 @@ class Robodt
 	}
 
 
-	public function debug($title,$value) {
-		$this->api['debug'][$title] = $value;
-	}
-
-
-	public function debugOutputArray() {
-		return $this->api['debug'];
-	}
-
-
-	public function debugOutputHtml() {
-		$output = "<hr />\n";
-		foreach ($this->api['debug'] as $title => $value) {
-			$output .= "<h3>" . $title . "</h3>\n";
-			$output .= "<pre>" . print_r($value, true) . "</pre>\n";
-		}
-		return $output;
-	}
-
-
-	// TODO: implement
 	public function render($uri, $site = false) {
 		$this->hooks->execute('init');
 		$this->hooks->execute('site.set', array($site));
@@ -96,13 +75,10 @@ class Robodt
 		if ( ! $site) {
 			$site = $_SERVER['SERVER_NAME'];
 		}
-
 		if ( ! file_exists('./sites/' . $site)) {
 			$site = 'default';
 		}
-
 		$this->api['site'] = $site;
-
 		return $site;
 	}
 
@@ -112,7 +88,29 @@ class Robodt
 	}
 
 
-	// DEBUG FUNCTIONS
+	/*
+	 * DEBUG FUNCTIONS
+	 */
+
+
+	public function debug($title,$value) {
+		$this->api['debug'][$title] = $value;
+	}
+
+
+	public function debugOutputArray() {
+		return $this->api['debug'];
+	}
+
+
+	public function debugOutputHtml() {
+		$output = "<hr />\n";
+		foreach ($this->api['debug'] as $title => $value) {
+			$output .= "<h3>" . $title . "</h3>\n";
+			$output .= "<pre>" . print_r($value, true) . "</pre>\n";
+		}
+		return $output;
+	}
 
 
 	public function debugApi() {
