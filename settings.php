@@ -30,6 +30,9 @@ class Settings extends Robodt
 		if ($key) {
 			$this->settings[$key] = $settings;
 		}
+		else {
+			$this->settings = array_merge($this->settings, $settings);
+		}
 
 		return $settings;
 	}
