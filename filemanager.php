@@ -39,23 +39,4 @@ class FileManager {
 	}
 
 
-	private function splitFile($contents) {
-		$contents = str_replace("\r", "", $contents);
-		return preg_split('![\r\n]+[-]{4,}!i', $contents);
-	}
-
-
-	private function parseMetadata($contents) {
-		// Generate array from string
-		$metadata = array();
-		preg_match_all('/^(.+?):(.+)$/m', $contents, $metadata);
-
-		// Convert array to key value format
-		$metadata = array_combine($metadata[1], $metadata[2]);
-
-		// Trim values and return
-		return array_map('trim', $metadata);
-	}
-
-
 }
