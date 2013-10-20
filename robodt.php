@@ -41,6 +41,7 @@ class Robodt
 		$this->hooks->register('site.set', 'loadSettings', $this, 20);
 		$this->hooks->register('request.render', 'requestRender', $this, 10);
 		$this->hooks->register('request.postrender', 'debugApi', $this, 100);
+		$this->debug('Robodt Location', __dir__.DIRECTORY_SEPARATOR);
 	}
 
 
@@ -89,7 +90,11 @@ class Robodt
 		if ( ! $site) {
 			$site = $this->api['site'];
 		}
-		$site = array('.', $this->settings->get('dir.sites'), $site );
+		$site = array(
+			$this->settings->get('dir.root'),
+			$this->settings->get('dir.sites'),
+			$site
+			);
 		return implode(DIRECTORY_SEPARATOR, $site);
 	}
 
