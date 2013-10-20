@@ -39,10 +39,7 @@ class Robodt
 		$this->hooks->register('site.set', 'setSite', $this, 10);
 		$this->hooks->register('site.set', 'loadSettings', $this, 20);
 		$this->hooks->register('request.render', 'requestRender', $this, 10);
-
-		// DEBUG: debug hooks, to be removed remove later on
-		// $this->hooks->register('debug', 'debugSettings', $this, 10);
-		$this->hooks->register('debug', 'debugApi', $this, 100);
+		$this->hooks->register('request.postrender', 'debugApi', $this, 100);
 
 		// DEBUG: hard coded settings, change it!
 		$this->settings->set('dir.sites', 'sites');
@@ -54,8 +51,9 @@ class Robodt
 	public function render($uri, $site = false) {
 		$this->hooks->execute('init');
 		$this->hooks->execute('site.set', array($site));
+		$this->hooks->execute('request.prerender');
 		$this->hooks->execute('request.render', array($uri));
-		$this->hooks->execute('debug');
+		$this->hooks->execute('request.postrender');
 		return $this->api;
 	}
 
@@ -127,18 +125,6 @@ class Robodt
 
 	public function debugApi() {
 		$this->debug('API', $this->api);
-		// print "<h3>API</h3>\n";
-		// print "<pre>\n";
-		// print_r($this->api);
-		// print "\n</pre><hr />";
-	}
-
-
-	public function debugSettings() {
-		print "<h3>Settings</h3>\n";
-		print "<pre>\n";
-		print_r($this->settings->get_all());
-		print "\n</pre><hr />";
 	}
 
 
