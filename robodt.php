@@ -9,12 +9,12 @@
 
 namespace Robodt;
 
-require 'hooks.php';
-require 'actions.php';
-require 'settings.php';
-require 'filemanager.php';
-require 'meta.php';
-require 'content.php';
+require __dir__.DIRECTORY_SEPARATOR.'hooks.php';
+require __dir__.DIRECTORY_SEPARATOR.'actions.php';
+require __dir__.DIRECTORY_SEPARATOR.'settings.php';
+require __dir__.DIRECTORY_SEPARATOR.'filemanager.php';
+require __dir__.DIRECTORY_SEPARATOR.'meta.php';
+require __dir__.DIRECTORY_SEPARATOR.'content.php';
 
 class Robodt
 {
