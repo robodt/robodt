@@ -23,6 +23,7 @@ class Robodt
 	public $actions;
 	protected $settings;
 	protected $filemanager;
+	protected $content;
 	protected $api;
 
 
@@ -31,6 +32,7 @@ class Robodt
 		$this->actions = new Actions;
 		$this->settings = new Settings;
 		$this->filemanager = new FileManager;
+		$this->content = new Content;
 		$this->api = array();
 
 		// Register hooks and actions
@@ -74,14 +76,18 @@ class Robodt
 		$this->actions->execute('site.set', array($site));
 		$this->actions->execute('request.render', array($uri));
 		$this->hooks->execute('debug');
+		return $this->api;
 	}
 
 
 	public function requestRender($uri) {
-		print "<h3>Content Tree</h3>\n<pre>\n";
 		$content = array('.', 'sites', 'default', 'contents');
-		print_r($this->filemanager->getTree($content));
-		print "\n</pre><hr />";
+		$this->api['filetree'] = $this->filemanager->getTree($content);
+		if (count($uri) > 0) {
+			$content = array_merge($content, $uri);
+		}
+		$content = implode(DIRECTORY_SEPARATOR, $content) . DIRECTORY_SEPARATOR . "index.txt";
+		$this->api['request'] = $this->content->parseFile($content);
 	}
 
 
