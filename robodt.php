@@ -61,7 +61,7 @@ class Robodt
 
 
 	public function requestRender($uri) {
-		$content = array('.', 'sites', 'default', 'contents');
+		$content = array($this->sitePath(), 'contents');
 		$this->api['filetree'] = $this->filemanager->getTree($content);
 		if (count($uri) > 0) {
 			$content = array_merge($content, $uri);
@@ -86,7 +86,10 @@ class Robodt
 	}
 
 
-	public function sitePath($site) {
+	public function sitePath($site = false) {
+		if ( ! $site) {
+			$site = $this->api['site'];
+		}
 		$site = array('.', $this->settings->get('dir.sites'), $site );
 		return implode(DIRECTORY_SEPARATOR, $site);
 	}
@@ -123,10 +126,11 @@ class Robodt
 
 
 	public function debugApi() {
-		print "<h3>API</h3>\n";
-		print "<pre>\n";
-		print_r($this->api);
-		print "\n</pre><hr />";
+		$this->debug('API', $this->api);
+		// print "<h3>API</h3>\n";
+		// print "<pre>\n";
+		// print_r($this->api);
+		// print "\n</pre><hr />";
 	}
 
 
