@@ -38,20 +38,27 @@ class Content
 			// Metadata found
 			if (count($file) > 1) {
 				return array(
+					'status' => 200,
 					'content' => $this->parseMarkdown($file[1]),
-					'metadata' => $this->parseMetadata($file[0])
+					'metadata' => $this->parseMetadata($file[0]),
 					);
 			}
 
 			// No metadata found
 			else {
-				return array('content' => $this->parseMarkdown($file[0]));
+				return array(
+					'status' => 200,
+					'content' => $this->parseMarkdown($file[0]),
+					);
 			}
 		}
 
 		// File not found, return false
 		else {
-			return false;
+			return array(
+				'status' => 404,
+				'content' => false,
+				);
 		}
 	}
 
