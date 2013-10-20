@@ -36,15 +36,11 @@ class Robodt
 		$this->api = array();
 
 		// Register hooks and actions
+		$this->hooks->register('init', 'getSettings', $this, 10);
 		$this->hooks->register('site.set', 'setSite', $this, 10);
 		$this->hooks->register('site.set', 'loadSettings', $this, 20);
 		$this->hooks->register('request.render', 'requestRender', $this, 10);
 		$this->hooks->register('request.postrender', 'debugApi', $this, 100);
-
-		// DEBUG: hard coded settings, change it!
-		$this->settings->set('dir.sites', 'sites');
-		$this->settings->set('dir.content', 'content');
-		$this->settings->set('dir.themes', 'themes');
 	}
 
 
@@ -66,6 +62,11 @@ class Robodt
 		}
 		$content = implode(DIRECTORY_SEPARATOR, $content) . DIRECTORY_SEPARATOR . "index.txt";
 		$this->api['request'] = $this->content->parseFile($content);
+	}
+
+
+	public function getSettings() {
+		$this->settings->load('settings.php');
 	}
 
 
