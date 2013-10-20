@@ -41,7 +41,7 @@ class Robodt
 		$this->hooks->register('request.render', 'requestRender', $this, 10);
 
 		// DEBUG: debug hooks, to be removed remove later on
-		$this->hooks->register('debug', 'debugSettings', $this, 10);
+		// $this->hooks->register('debug', 'debugSettings', $this, 10);
 		$this->hooks->register('debug', 'debugApi', $this, 100);
 
 		// DEBUG: hard coded settings, change it!
