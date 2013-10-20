@@ -96,7 +96,7 @@ class Robodt
 			$site = $_SERVER['SERVER_NAME'];
 		}
 
-		if ( ! file_exists($site)) {
+		if ( ! file_exists('./sites/' . $site)) {
 			$site = 'default';
 		}
 
