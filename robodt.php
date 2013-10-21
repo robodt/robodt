@@ -79,18 +79,19 @@ class Robodt
 			$this->sitePath(),
 			$this->settings->get('dir.content')
 			));
-		// print_r($this->api);
+		$this->api['filetree'] = $this->filemanager->getTree($this->api['site']['content']);
+
 	}
 
 
 	public function requestRender($uri) {
-		$content = $this->api['site']['content'];
-		$this->api['filetree'] = $this->filemanager->getTree($content);
+		$file = array();
+		$file[] = $this->api['site']['content'];
 		if (count($uri) > 0) {
-			$content = $content . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $uri);
+			$file = array_merge($file, $uri);
 		}
-		$content = $content . DIRECTORY_SEPARATOR . "index.txt";
-		$this->api['request'] = $this->content->parseFile($content);
+		$file[] = "index.txt";
+		$this->api['request'] = $this->content->parseFile($file);
 	}
 
 
