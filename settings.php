@@ -11,52 +11,56 @@ namespace Robodt;
 
 class Settings extends Robodt
 {
+    protected $settings;
 
-	protected $settings;
+    public function __construct()
+    {
+        $this->settings = array();
+    }
 
-	public function __construct() {
-		$this->settings = array();
-	}
+    public function load($file, $key = false)
+    {
+        if ( ! file_exists($file)) {
+            return false;
+        }
 
-	public function load($file, $key = false) {
-		if ( ! file_exists($file)) {
-			return false;
-		}
+        $settings = file_get_contents($file, FILE_USE_INCLUDE_PATH);
+        $settings = str_replace(array('<?php', '<?', 'die();', 'exit();'), '', $settings);
+        $settings = json_decode($settings, true);
 
-		$settings = file_get_contents($file, FILE_USE_INCLUDE_PATH);
-		$settings = str_replace(array('<?php', '<?', 'die();', 'exit();'), '', $settings);
-		$settings = json_decode($settings, true);
+        if ($key) {
+            $this->settings[$key] = $settings;
+        } else {
+            $this->settings = array_merge($this->settings, $settings);
+        }
 
-		if ($key) {
-			$this->settings[$key] = $settings;
-		}
-		else {
-			$this->settings = array_merge($this->settings, $settings);
-		}
+        return $settings;
+    }
 
-		return $settings;
-	}
+    public function set($key, $value)
+    {
+        $this->remove($key);
+        $this->settings[$key] = $value;
+    }
 
-	public function set($key, $value) {
-		$this->remove($key);
-		$this->settings[$key] = $value;
-	}
+    public function get($key)
+    {
+        if ( ! isset($this->settings[$key])) {
+            return false;
+        }
+        return $this->settings[$key];
+    }
 
-	public function get($key) {
-		if ( ! isset($this->settings[$key])) {
-			return false;
-		}
-		return $this->settings[$key];
-	}
+    public function remove($key)
+    {
+        if (isset($this->settings[$key])) {
+            unset($this->settings[$key]);
+        }
+    }
 
-	public function remove($key) {
-		if (isset($this->settings[$key])) {
-			unset($this->settings[$key]);
-		}
-	}
-
-	public function get_all() {
-		return $this->settings;
-	}
+    public function get_all()
+    {
+        return $this->settings;
+    }
 
 }

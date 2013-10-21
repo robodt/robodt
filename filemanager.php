@@ -13,30 +13,28 @@ use DirectoryIterator;
 
 class FileManager {
 
+    public function getTree($dir)
+    {
+        if (is_array($dir)) {
+            $dir = implode(DIRECTORY_SEPARATOR, $dir);
+        }
+        $dir = new DirectoryIterator($dir);
+        return $this->generateTree($dir);
+    }
 
-	public function getTree($dir) {
-		if (is_array($dir)) {
-			$dir = implode(DIRECTORY_SEPARATOR, $dir);
-		}
-		$dir = new DirectoryIterator($dir);
-		return $this->generateTree($dir);
-	}
-
-
-	private function generateTree( DirectoryIterator $dir ) {
-		$data = array();
-		foreach ( $dir as $node ) {
-			if ( $node->isDir() && !$node->isDot() ) {
-				$data[$node->getFilename()] = $this->generateTree( new DirectoryIterator( $node->getPathname() ) );
-			}
-			else if ( $node->isFile() ) {
-				if ( substr( $node->getFilename(), 0, 1) != '.') {
-					$data[] = $node->getFilename();
-				}
-			}
-		}
-		return $data;
-	}
-
+    private function generateTree( DirectoryIterator $dir )
+    {
+        $data = array();
+        foreach ( $dir as $node ) {
+            if ( $node->isDir() && !$node->isDot() ) {
+                $data[$node->getFilename()] = $this->generateTree( new DirectoryIterator( $node->getPathname() ) );
+            } else if ( $node->isFile() ) {
+                if ( substr( $node->getFilename(), 0, 1) != '.') {
+                    $data[] = $node->getFilename();
+                }
+            }
+        }
+        return $data;
+    }
 
 }

@@ -11,7 +11,5 @@ namespace Robodt;
 
 class MetaData
 {
-
-	// Read meta data
-
+    // Read meta data
 }

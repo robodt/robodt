@@ -11,36 +11,40 @@ namespace Robodt;
 
 class Actions
 {
+    public $actions;
 
-	public $actions;
+    public function __construct()
+    {
+        $this->actions = array();
+    }
 
-	public function __construct() {
-		$this->actions = array();
-	}
+    public function register($key, $function, $class)
+    {
+        $this->remove($key);
+        $this->actions[$key] = array(
+                'function'        => $function,
+                'class'           => $class
+            );
+    }
 
-	public function register($key, $function, $class) {
-		$this->remove($key);
-		$this->actions[$key] = array(
-				'function'		=> $function,
-				'class'			=> $class
-			);
-	}
+    public function remove($key)
+    {
+        if (isset($this->actions[$key])) {
+            unset($this->actions[$key]);
+        }
+    }
 
-	public function remove($key) {
-		if (isset($this->actions[$key])) {
-			unset($this->actions[$key]);
-		}
-	}
+    public function execute($key, $parameters = array())
+    {
+        if ( ! isset($this->actions[$key])) {
+            return false;
+        }
+        return call_user_func_array(array($this->actions[$key]['class'], $this->actions[$key]['function']), $parameters);
+    }
 
-	public function execute($key, $parameters = array()) {
-		if ( ! isset($this->actions[$key])) {
-			return false;
-		}
-		return call_user_func_array(array($this->actions[$key]['class'], $this->actions[$key]['function']), $parameters);
-	}
-
-	public function registered() {
-		return $this->actions;
-	}
+    public function registered()
+    {
+        return $this->actions;
+    }
 
 }
