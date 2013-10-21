@@ -30,6 +30,9 @@ class Content
 	 * Parse markdown file
 	 */
 	public function parseFile($file) {
+		if (is_array($file)) {
+			$file = implode(DIRECTORY_SEPARATOR, $file);
+		}
 		// File found
 		if (file_exists($file)) {
 			$file = file_get_contents($file, FILE_USE_INCLUDE_PATH);
