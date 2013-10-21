@@ -11,13 +11,16 @@ namespace Robodt;
 
 class Hooks
 {
-    public $hooks;
+    private $hooks = array();
 
-    public function __construct()
-    {
-        $this->hooks = array();
-    }
-
+    /**
+     * Register hook in register
+     *
+     * @param string $key Register key
+     * @param string $function Function name
+     * @param string $class Class name
+     * @param int $priority Priority of executing (higher is more importent) - optional
+     */
     public function register($key, $function, $class, $priority = 10)
     {
         $this->hooks[$key][$priority] = array(
@@ -26,12 +29,20 @@ class Hooks
             );
     }
 
+    /**
+     * Overwrite registed hook with a new one
+     */
     public function overwrite($key, $function, $class, $priority = 10)
     {
         $this->remove($key);
         $this->register_hook($key, $function, $class, $priority);
     }
 
+    /**
+     * Remove hook from register
+     *
+     * @param string $key Register key
+     */
     public function remove($key)
     {
         if (isset($this->hooks[$key])) {
@@ -39,6 +50,13 @@ class Hooks
         }
     }
 
+    /**
+     * Execute hooked functions
+     *
+     * @param string $key Register key
+     * @param array $parameters Parameters for executed functions - optional
+     * @return returns false on empty register key
+     */
     public function execute($key, $parameters = array())
     {
         if ( ! isset($this->hooks[$key])) {
@@ -53,6 +71,11 @@ class Hooks
         }
     }
 
+    /**
+     * Get register
+     *
+     * @return array Register
+     */
     public function registered()
     {
         return $this->hooks;

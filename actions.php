@@ -11,13 +11,15 @@ namespace Robodt;
 
 class Actions
 {
-    public $actions;
+    protected $actions = array();
 
-    public function __construct()
-    {
-        $this->actions = array();
-    }
-
+    /**
+     * Register action in register
+     *
+     * @param string $key Register key
+     * @param string $function Function name
+     * @param string $class Class name
+     */
     public function register($key, $function, $class)
     {
         $this->remove($key);
@@ -27,6 +29,11 @@ class Actions
             );
     }
 
+    /**
+     * Remove action from register
+     *
+     * @param string $key Register key
+     */
     public function remove($key)
     {
         if (isset($this->actions[$key])) {
@@ -34,6 +41,13 @@ class Actions
         }
     }
 
+    /**
+     * Execute action function
+     *
+     * @param string $key Register key
+     * @param array $parameters Parameters for executed functions - optional
+     * @return returns function result
+     */
     public function execute($key, $parameters = array())
     {
         if ( ! isset($this->actions[$key])) {
@@ -42,6 +56,11 @@ class Actions
         return call_user_func_array(array($this->actions[$key]['class'], $this->actions[$key]['function']), $parameters);
     }
 
+    /**
+     * Get register
+     *
+     * @return array Register
+     */
     public function registered()
     {
         return $this->actions;

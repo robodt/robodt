@@ -25,6 +25,9 @@ class Content
 
     /**
      * Parse markdown file
+     *
+     * @param array or string $file Absolute path to file
+     * @return array Result of rendering with statuscode, content and metadata
      */
     public function parseFile($file)
     {
@@ -82,7 +85,10 @@ class Content
     }
 
     /**
-     * Parse markdown content
+     * Parse markdown content to html
+     * 
+     * @param string $contents Markdown content
+     * @return string Html content
      */
     public function parseMarkdown($contents)
     {

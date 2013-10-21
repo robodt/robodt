@@ -11,13 +11,15 @@ namespace Robodt;
 
 class Settings extends Robodt
 {
-    protected $settings;
+    protected $settings = array();
 
-    public function __construct()
-    {
-        $this->settings = array();
-    }
-
+    /**
+     * Load settings from file
+     *
+     * @param string $file Path to file
+     * @param string $key Register key - optional
+     * @return array Settings from file
+     */
     public function load($file, $key = false)
     {
         if ( ! file_exists($file)) {
@@ -37,12 +39,24 @@ class Settings extends Robodt
         return $settings;
     }
 
+    /**
+     * Set setting(s) in register
+     *
+     * @param string $key Register key
+     * @param array or string $value Setting value(s)
+     */
     public function set($key, $value)
     {
         $this->remove($key);
         $this->settings[$key] = $value;
     }
 
+    /**
+     * Get setting(s) from register
+     *
+     * @param string $key Register key
+     * @return array or string Register value
+     */
     public function get($key)
     {
         if ( ! isset($this->settings[$key])) {
@@ -51,6 +65,11 @@ class Settings extends Robodt
         return $this->settings[$key];
     }
 
+    /**
+     * Remove setting(s) from register
+     *
+     * @param string $key Register key
+     */
     public function remove($key)
     {
         if (isset($this->settings[$key])) {
@@ -58,6 +77,11 @@ class Settings extends Robodt
         }
     }
 
+    /**
+     * Get all settings from register
+     *
+     * @return array Register settings
+     */
     public function get_all()
     {
         return $this->settings;

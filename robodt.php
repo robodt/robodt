@@ -43,6 +43,13 @@ class Robodt
         $this->debug('Robodt Location', __dir__.DIRECTORY_SEPARATOR);
     }
 
+    /**
+     * Execute all important hooks to render request
+     * 
+     * @param array $uri HTTP request uri
+     * @param string $site Hostname - optional
+     * @return array API data
+     */
     public function render($uri, $site = false)
     {
         $this->hooks->execute('init', array($site));
@@ -52,16 +59,29 @@ class Robodt
         return $this->api();
     }
 
+    /**
+     * Get API data
+     * 
+     * @return array API data
+     */
     public function api()
     {
         return $this->api;
     }
 
+    /**
+     * Load main settings
+     */
     public function loadSettings()
     {
         $this->settings->load('settings.php');
     }
 
+    /**
+     * Set current site
+     * 
+     * @param string $site Hostname - optional
+     */
     public function setSite($site = false)
     {
         if ( ! $site) {
@@ -76,6 +96,9 @@ class Robodt
         $this->api['site']['name'] = $site;
     }
 
+    /**
+     * Load site settings
+     */
     public function loadSiteSettings()
     {
         $this->settings->load(
@@ -89,6 +112,9 @@ class Robodt
             );
     }
 
+    /**
+     * Collect API data
+     */
     public function loadApi()
     {
         $this->api['settings'] = $this->settings->get_all();
@@ -101,6 +127,11 @@ class Robodt
 
     }
 
+    /**
+     * Parse requested page from file
+     * 
+     * @param array $uri Uri from request
+     */
     public function requestRender($uri)
     {
         $file = array();
@@ -112,6 +143,12 @@ class Robodt
         $this->api['request'] = $this->content->parseFile($file);
     }
 
+    /**
+     * Generate absolute path to site directory
+     *
+     * @param string $site Hostname
+     * @return string absolute site file path - optional
+     */
     public function sitePath($site = false)
     {
         if ( ! $site) {
@@ -125,6 +162,12 @@ class Robodt
         return implode(DIRECTORY_SEPARATOR, $site);
     }
 
+    /**
+     * Generate, filter and stringify file path's
+     *
+     * @param string or array $path File path to filter and transform
+     * @return string Filtered and stringified file path
+     */
     public function generatePath($path)
     {
         if (is_array($path)) {
@@ -138,7 +181,7 @@ class Robodt
      * DEBUG FUNCTIONS
      */
 
-    public function debug($title,$value)
+    public function debug($title, $value)
     {
         $this->api['debug'][$title] = $value;
     }

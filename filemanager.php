@@ -13,6 +13,12 @@ use DirectoryIterator;
 
 class FileManager {
 
+	/**
+	 * Transform filepath to DirectoryIterator
+	 *
+	 * @param array or string $dir Path to transform
+	 * @return array Directory tree
+	 */
     public function getTree($dir)
     {
         if (is_array($dir)) {
