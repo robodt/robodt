@@ -35,19 +35,17 @@ class Robodt
 		$this->content = new Content;
 		$this->api = array();
 
-		// Register hooks and actions
-		$this->hooks->register('init', 'getSettings', $this, 10);
-		$this->hooks->register('site.set', 'setSite', $this, 10);
-		$this->hooks->register('site.set', 'loadSettings', $this, 20);
-		$this->hooks->register('request.render', 'requestRender', $this, 10);
+		$this->hooks->register('init', 'loadSettings', $this, 200);
+		$this->hooks->register('init', 'setSite', $this, 100);
+		$this->hooks->register('request.prerender', 'loadApi', $this, 100);
+		$this->hooks->register('request.render', 'requestRender', $this, 100);
 		$this->hooks->register('request.postrender', 'debugApi', $this, 100);
 		$this->debug('Robodt Location', __dir__.DIRECTORY_SEPARATOR);
 	}
 
 
 	public function render($uri, $site = false) {
-		$this->hooks->execute('init');
-		$this->hooks->execute('site.set', array($site));
+		$this->hooks->execute('init', array($site));
 		$this->hooks->execute('request.prerender');
 		$this->hooks->execute('request.render', array($uri));
 		$this->hooks->execute('request.postrender');
@@ -55,18 +53,7 @@ class Robodt
 	}
 
 
-	public function requestRender($uri) {
-		$content = array($this->sitePath(), 'contents');
-		$this->api['filetree'] = $this->filemanager->getTree($content);
-		if (count($uri) > 0) {
-			$content = array_merge($content, $uri);
-		}
-		$content = implode(DIRECTORY_SEPARATOR, $content) . DIRECTORY_SEPARATOR . "index.txt";
-		$this->api['request'] = $this->content->parseFile($content);
-	}
-
-
-	public function getSettings() {
+	public function loadSettings() {
 		$this->settings->load('settings.php');
 	}
 
@@ -81,14 +68,35 @@ class Robodt
 		if ( ! file_exists($this->sitePath($site))) {
 			die('Requested site and default fallback could not be found.');
 		}
-		$this->api['site'] = $site;
-		return $site;
+		$this->api['site']['name'] = $site;
+	}
+
+
+	public function loadApi() {
+		$this->api['settings'] = $this->settings->get_all();
+		$this->api['site']['directory'] = $this->sitePath();
+		$this->api['site']['content'] = implode(DIRECTORY_SEPARATOR, array(
+			$this->sitePath(),
+			$this->settings->get('dir.content')
+			));
+		// print_r($this->api);
+	}
+
+
+	public function requestRender($uri) {
+		$content = $this->api['site']['content'];
+		$this->api['filetree'] = $this->filemanager->getTree($content);
+		if (count($uri) > 0) {
+			$content = $content . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $uri);
+		}
+		$content = $content . DIRECTORY_SEPARATOR . "index.txt";
+		$this->api['request'] = $this->content->parseFile($content);
 	}
 
 
 	public function sitePath($site = false) {
 		if ( ! $site) {
-			$site = $this->api['site'];
+			$site = $this->api['site']['name'];
 		}
 		$site = array(
 			$this->settings->get('dir.root'),
@@ -96,11 +104,6 @@ class Robodt
 			$site
 			);
 		return implode(DIRECTORY_SEPARATOR, $site);
-	}
-
-
-	public function loadSettings() {
-		$this->api['settings'] = $this->settings->get_all();
 	}
 
 
