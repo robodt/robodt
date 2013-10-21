@@ -49,6 +49,11 @@ class Robodt
 		$this->hooks->execute('request.prerender');
 		$this->hooks->execute('request.render', array($uri));
 		$this->hooks->execute('request.postrender');
+		return $this->api();
+	}
+
+
+	public function api() {
 		return $this->api;
 	}
 
