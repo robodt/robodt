@@ -11,7 +11,12 @@ namespace Robodt;
 
 class Actions
 {
-    protected $actions = array();
+    protected $actions;
+
+    public function __construct()
+    {
+    	$this->actions = array();
+    }
 
     /**
      * Register action in register

@@ -11,7 +11,12 @@ namespace Robodt;
 
 class Hooks
 {
-    private $hooks = array();
+    private $hooks;
+
+    public function __construct()
+    {
+    	$this->hooks = array();
+    }
 
     /**
      * Register hook in register
