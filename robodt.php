@@ -15,6 +15,7 @@ require __dir__.DIRECTORY_SEPARATOR.'settings.php';
 require __dir__.DIRECTORY_SEPARATOR.'filemanager.php';
 require __dir__.DIRECTORY_SEPARATOR.'meta.php';
 require __dir__.DIRECTORY_SEPARATOR.'content.php';
+require __dir__.DIRECTORY_SEPARATOR.'navigation.debug.php';
 
 use Robodt\Hooks;
 use Robodt\Actions;
@@ -22,6 +23,7 @@ use Robodt\Settings;
 use Robodt\FileManager;
 use Robodt\Meta;
 use Robodt\Content;
+use Robodt\DebugNavigation;
 
 class Robodt
 {
@@ -31,6 +33,7 @@ class Robodt
     protected $filemanager;
     protected $content;
     protected $api;
+    protected $navigation;
 
     public function __construct()
     {
@@ -41,6 +44,7 @@ class Robodt
         $this->content = new Content;
         $this->api = array();
         $this->registerHooks();
+        $this->navigation = new DebugNavigation;
     }
 
     /**
@@ -138,7 +142,7 @@ class Robodt
             $this->settings->get('dir.content')
             ));
         $this->api['filetree'] = $this->filemanager->getTree($this->api['site']['content']);
-
+        $this->api['navigation'] = $this->navigation->items();
     }
 
     /**
