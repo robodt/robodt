@@ -16,6 +16,13 @@ require __dir__.DIRECTORY_SEPARATOR.'filemanager.php';
 require __dir__.DIRECTORY_SEPARATOR.'meta.php';
 require __dir__.DIRECTORY_SEPARATOR.'content.php';
 
+use Robodt\Hooks;
+use Robodt\Actions;
+use Robodt\Settings;
+use Robodt\FileManager;
+use Robodt\Meta;
+use Robodt\Content;
+
 class Robodt
 {
     public $hooks;
@@ -33,14 +40,7 @@ class Robodt
         $this->filemanager = new FileManager;
         $this->content = new Content;
         $this->api = array();
-
-        $this->hooks->register('init', 'loadSettings', $this, 300);
-        $this->hooks->register('init', 'setSite', $this, 200);
-        $this->hooks->register('init', 'loadSiteSettings', $this, 100);
-        $this->hooks->register('request.prerender', 'loadApi', $this, 100);
-        $this->hooks->register('request.render', 'requestRender', $this, 100);
-        $this->hooks->register('request.postrender', 'debugApi', $this, 100);
-        $this->debug('Robodt Location', __dir__.DIRECTORY_SEPARATOR);
+        $this->registerHooks();
     }
 
     /**
@@ -67,6 +67,20 @@ class Robodt
     public function api()
     {
         return $this->api;
+    }
+
+    /**
+     * Register main hooks
+     */
+    private function registerHooks()
+    {
+        $this->hooks->register('init', 'loadSettings', $this, 300);
+        $this->hooks->register('init', 'setSite', $this, 200);
+        $this->hooks->register('init', 'loadSiteSettings', $this, 100);
+        $this->hooks->register('request.prerender', 'loadApi', $this, 100);
+        $this->hooks->register('request.render', 'requestRender', $this, 100);
+        $this->hooks->register('request.postrender', 'debugApi', $this, 100);
+        $this->debug('Robodt Location', __dir__.DIRECTORY_SEPARATOR);
     }
 
     /**
