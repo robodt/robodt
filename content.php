@@ -17,10 +17,58 @@ class Content
     // Fields
 
     private $markdown;
+    private $index;
+    private $register;
 
     public function __construct()
     {
         $this->markdown = new MarkdownParser;
+        $this->index = array();
+        $this->register = array();
+    }
+
+    /**
+     * Render content register
+     *
+     * @param array $filetree File tree of content folder
+     * @param string $root Root directory of content folder
+     * @return array Content register
+     */
+    public function renderContent($uri, $dir)
+    {
+    	$register = array();
+
+    	foreach ($filetree as $key => $value) {
+    		if (is_array($key)) {
+    			$this->renderContent($key, $prefix . '/' . $key);
+    		} else if ($key == 'index.txt') {
+    			
+    		}
+    	}
+    }
+
+    public function getTree($dir)
+    {
+        if (is_array($dir)) {
+            $dir = implode(DIRECTORY_SEPARATOR, $dir);
+        }
+        $dir = new DirectoryIterator($dir);
+        return $this->generateTree($dir);
+    }
+
+    private function generateTree( DirectoryIterator $dir )
+    {
+        $data = array();
+        foreach ( $dir as $node ) {
+            if ( $node->isDir() && !$node->isDot() ) {
+                $data[$node->getFilename()] = $this->generateTree( new DirectoryIterator( $node->getPathname() ) );
+            } else if ( $node->isFile() ) {
+                if ( substr( $node->getFilename(), 0, 1) != '.') {
+                    $data[] = $node->getFilename();
+                }
+            }
+        }
+        return $data;
     }
 
     /**
