@@ -78,9 +78,7 @@ class Robodt
      */
     private function registerHooks()
     {
-        $this->hooks->register('init', 'loadSettings', $this, 300);
-        $this->hooks->register('init', 'setSite', $this, 200);
-        $this->hooks->register('init', 'loadSiteSettings', $this, 100);
+        $this->hooks->register('init', 'loadSettings', $this, 100);
         $this->hooks->register('request.prerender', 'loadApi', $this, 100);
         $this->hooks->register('request.render', 'requestRender', $this, 100);
         $this->hooks->register('request.postrender', 'debugApi', $this, 100);
@@ -96,51 +94,18 @@ class Robodt
     }
 
     /**
-     * Set current site
-     * 
-     * @param string $site Hostname - optional
-     */
-    public function setSite($site = false)
-    {
-        if ( ! $site) {
-            $site = $_SERVER['SERVER_NAME'];
-        }
-        if ( ! file_exists($this->sitePath($site))) {
-            $site = 'default';
-        }
-        if ( ! file_exists($this->sitePath($site))) {
-            die('Requested site and default fallback could not be found.');
-        }
-        $this->api['site']['name'] = $site;
-    }
-
-    /**
-     * Load site settings
-     */
-    public function loadSiteSettings()
-    {
-        $this->settings->load(
-            $this->generatePath(
-                array(
-                    $this->sitePath(),
-                    'site',
-                    'settings.php'
-                    )
-                )
-            );
-    }
-
-    /**
      * Collect API data
      */
     public function loadApi()
     {
         $this->api['settings'] = $this->settings->get_all();
-        $this->api['site']['directory'] = $this->sitePath();
-        $this->api['site']['content'] = implode(DIRECTORY_SEPARATOR, array(
-            $this->sitePath(),
-            $this->settings->get('dir.content')
-            ));
+
+        $root = $this->settings->get('dir.root');
+        $site = $this->settings->get('dir.site');
+        $content = $this->settings->get('dir.content');
+
+        $this->api['site']['directory'] = $root . DIRECTORY_SEPARATOR . $site;
+        $this->api['site']['content'] = $root . DIRECTORY_SEPARATOR . $site . DIRECTORY_SEPARATOR . $content;
         $this->api['filetree'] = $this->filemanager->getTree($this->api['site']['content']);
         $this->api['navigation'] = $this->navigation->items();
     }
@@ -159,25 +124,6 @@ class Robodt
         }
         $file[] = "index.txt";
         $this->api['request'] = $this->content->parseFile($file);
-    }
-
-    /**
-     * Generate absolute path to site directory
-     *
-     * @param string $site Hostname
-     * @return string absolute site file path - optional
-     */
-    public function sitePath($site = false)
-    {
-        if ( ! $site) {
-            $site = $this->api['site']['name'];
-        }
-        $site = array(
-            $this->settings->get('dir.root'),
-            $this->settings->get('dir.sites'),
-            $site
-            );
-        return implode(DIRECTORY_SEPARATOR, $site);
     }
 
     /**
