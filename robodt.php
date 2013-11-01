@@ -98,12 +98,15 @@ class Robodt
      */
     public function loadApi()
     {
+        // Render settings
         $this->api['settings'] = $this->settings->get_all();
 
+        // Get needed settings
         $root = $this->settings->get('dir.root');
         $site = $this->settings->get('dir.site');
         $content = $this->settings->get('dir.content');
 
+        // Fill API values
         $this->api['site']['directory'] = $root . DIRECTORY_SEPARATOR . $site;
         $this->api['site']['content'] = $root . DIRECTORY_SEPARATOR . $site . DIRECTORY_SEPARATOR . $content;
         $this->api['filetree'] = $this->filemanager->getTree($this->api['site']['content']);
