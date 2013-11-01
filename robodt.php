@@ -16,7 +16,7 @@ require __dir__.DIRECTORY_SEPARATOR.'settings.php';
 require __dir__.DIRECTORY_SEPARATOR.'filemanager.php';
 require __dir__.DIRECTORY_SEPARATOR.'meta.php';
 require __dir__.DIRECTORY_SEPARATOR.'content.php';
-require __dir__.DIRECTORY_SEPARATOR.'navigation.debug.php';
+require __dir__.DIRECTORY_SEPARATOR.'navigation.debug.php'; // NOTE: implement the real deal
 
 use Robodt\Debug;
 use Robodt\Hooks;
@@ -25,7 +25,7 @@ use Robodt\Settings;
 use Robodt\FileManager;
 use Robodt\Meta;
 use Robodt\Content;
-use Robodt\DebugNavigation;
+use Robodt\DebugNavigation; // TODO: implement the real deal
 
 class Robodt
 {
@@ -48,7 +48,7 @@ class Robodt
         $this->content = new Content;
         $this->api = array();
         $this->registerHooks();
-        $this->navigation = new DebugNavigation;
+        $this->navigation = new DebugNavigation; // TODO: implement the real deal
     }
 
     /**
