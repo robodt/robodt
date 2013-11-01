@@ -9,6 +9,7 @@
 
 namespace Robodt;
 
+require __dir__.DIRECTORY_SEPARATOR.'debug.php';
 require __dir__.DIRECTORY_SEPARATOR.'hooks.php';
 require __dir__.DIRECTORY_SEPARATOR.'actions.php';
 require __dir__.DIRECTORY_SEPARATOR.'settings.php';
@@ -17,6 +18,7 @@ require __dir__.DIRECTORY_SEPARATOR.'meta.php';
 require __dir__.DIRECTORY_SEPARATOR.'content.php';
 require __dir__.DIRECTORY_SEPARATOR.'navigation.debug.php';
 
+use Robodt\Debug;
 use Robodt\Hooks;
 use Robodt\Actions;
 use Robodt\Settings;
@@ -27,6 +29,7 @@ use Robodt\DebugNavigation;
 
 class Robodt
 {
+    public $debug;
     public $hooks;
     public $actions;
     protected $settings;
@@ -37,6 +40,7 @@ class Robodt
 
     public function __construct()
     {
+        $this->debug = new Debug;
         $this->hooks = new Hooks;
         $this->actions = new Actions;
         $this->settings = new Settings;
@@ -82,7 +86,7 @@ class Robodt
         $this->hooks->register('request.prerender', 'loadApi', $this, 100);
         $this->hooks->register('request.render', 'requestRender', $this, 100);
         $this->hooks->register('request.postrender', 'debugApi', $this, 100);
-        $this->debug('Robodt Location', __dir__.DIRECTORY_SEPARATOR);
+        $this->debug->log( array('Robodt Location' => __dir__.DIRECTORY_SEPARATOR) );
     }
 
     /**
@@ -122,9 +126,11 @@ class Robodt
     {
         $file = array();
         $file[] = $this->api['site']['content'];
+
         if (count($uri) > 0) {
             $file = array_merge($file, $uri);
         }
+
         $file[] = "index.txt";
         $this->api['request'] = $this->content->parseFile($file);
     }
@@ -143,34 +149,13 @@ class Robodt
         return $path;
     }
 
-
-    /*
-     * DEBUG FUNCTIONS
+    /**
+     * Debug API
      */
-
-    public function debug($title, $value)
-    {
-        $this->api['debug'][$title] = $value;
-    }
-
-    public function debugOutputArray()
-    {
-        return $this->api['debug'];
-    }
-
-    public function debugOutputHtml()
-    {
-        $output = "<hr />\n";
-        foreach ($this->api['debug'] as $title => $value) {
-            $output .= "<h3>" . $title . "</h3>\n";
-            $output .= "<pre>" . print_r($value, true) . "</pre>\n";
-        }
-        return $output;
-    }
-
     public function debugApi()
     {
-        $this->debug('API', $this->api);
+        $this->debug->log( array( 'API' => $this->api ) );
+        $this->api['debug'] = $this->debug->logArray();
     }
 
 }
