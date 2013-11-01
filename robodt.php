@@ -111,9 +111,9 @@ class Robodt
         $content = $this->settings->get('dir.content');
 
         // Fill API values
-        $this->api['site']['directory'] = $root . DIRECTORY_SEPARATOR . $site;
-        $this->api['site']['content'] = $root . DIRECTORY_SEPARATOR . $site . DIRECTORY_SEPARATOR . $content;
-        $this->api['filetree'] = $this->filemanager->getTree($this->api['site']['content']);
+        $this->api['site']['directory'] = $this->generatePath( array( $root, $site ) );
+        $this->api['site']['content'] = $this->generatePath( array( $root, $site, $content ) );
+        $this->api['filetree'] = $this->filemanager->getTree( $this->api['site']['content'] );
         $this->api['navigation'] = $this->navigation->items();
     }
 
