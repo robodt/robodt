@@ -13,6 +13,13 @@ use DirectoryIterator;
 
 class FileManager {
 
+    protected $index;
+
+    public function __construct()
+    {
+        $this->index = array();
+    }
+
 	/**
 	 * Transform filepath to DirectoryIterator
 	 *
@@ -41,6 +48,44 @@ class FileManager {
             }
         }
         return $data;
+    }
+
+    public function generateIndex($tree, $uri = '', $path = '')
+    {
+        foreach ($tree as $key => $value) {
+            if (is_array($value)) {
+                $this->generateIndex(
+                    $value,
+                    $uri . DIRECTORY_SEPARATOR . $this->generateUrl($key),
+                    $path . DIRECTORY_SEPARATOR . $key );
+            }
+            if ($value == 'index.txt') {
+                $this->index[$uri] = $path . DIRECTORY_SEPARATOR . 'index.txt';
+            }
+        }
+    }
+
+    public function getIndex()
+    {
+        return $this->index;
+    }
+
+    public function generateUrl($input)
+    {
+        $input = explode('.', $input);
+
+        if (is_array($input) && count($input) < 2) {
+            $input = $input[0];
+        }
+
+        if (is_array($input) && count($input) > 1) {
+            array_shift( $input );
+
+            if (is_array($input)) {
+                $input = implode('.', $input);
+            }
+        }
+        return $input;
     }
 
 }
