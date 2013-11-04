@@ -52,32 +52,6 @@ class Robodt
     }
 
     /**
-     * Execute all important hooks to render request
-     * 
-     * @param array $uri HTTP request uri
-     * @param string $site Hostname - optional
-     * @return array API data
-     */
-    public function render($uri, $site = false)
-    {
-        $this->hooks->execute('init', array($site));
-        $this->hooks->execute('request.prerender');
-        $this->hooks->execute('request.render', array($uri));
-        $this->hooks->execute('request.postrender');
-        return $this->api();
-    }
-
-    /**
-     * Get API data
-     * 
-     * @return array API data
-     */
-    public function api()
-    {
-        return $this->api;
-    }
-
-    /**
      * Register main hooks
      */
     private function registerHooks()
@@ -86,7 +60,7 @@ class Robodt
         $this->hooks->register('request.prerender', 'loadApi', $this, 100);
         $this->hooks->register('request.render', 'requestRender', $this, 100);
         $this->hooks->register('request.postrender', 'debugApi', $this, 100);
-        $this->debug->log( array('Robodt Location' => __dir__.DIRECTORY_SEPARATOR) );
+        $this->debug->log( array('Robodt Location' => __dir__ . DIRECTORY_SEPARATOR) );
     }
 
     /**
@@ -159,6 +133,32 @@ class Robodt
     {
         $this->debug->log( array( 'API' => $this->api ) );
         $this->api['debug'] = $this->debug->logArray();
+    }
+
+    /**
+     * Execute all important hooks to render request
+     * 
+     * @param array $uri HTTP request uri
+     * @param string $site Hostname - optional
+     * @return array API data
+     */
+    public function render($uri, $site = false)
+    {
+        $this->hooks->execute('init', array($site));
+        $this->hooks->execute('request.prerender');
+        $this->hooks->execute('request.render', array($uri));
+        $this->hooks->execute('request.postrender');
+        return $this->api();
+    }
+
+    /**
+     * Get API data
+     * 
+     * @return array API data
+     */
+    public function api()
+    {
+        return $this->api;
     }
 
 }
