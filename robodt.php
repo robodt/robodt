@@ -114,6 +114,10 @@ class Robodt
         $this->api['site']['directory'] = $this->generatePath( array( $root, $site ) );
         $this->api['site']['content'] = $this->generatePath( array( $root, $site, $content ) );
         $this->api['filetree'] = $this->filemanager->getTree( $this->api['site']['content'] );
+
+        // Generate url and file mappings
+        $this->filemanager->generateIndex( $this->api['filetree'] );
+        $this->api['index'] = $this->filemanager->getIndex();
         $this->api['navigation'] = $this->navigation->items();
     }
 
@@ -127,11 +131,10 @@ class Robodt
         $file = array();
         $file[] = $this->api['site']['content'];
 
-        if (count($uri) > 0) {
-            $file = array_merge($file, $uri);
+        if (isset( $this->api['index'][ DIRECTORY_SEPARATOR . $this->generatePath( $uri ) ] ) ) {
+            $file[] = $this->api['index'][ DIRECTORY_SEPARATOR . $this->generatePath( $uri ) ];
         }
 
-        $file[] = "index.txt";
         $this->api['request'] = $this->content->parseFile($file);
     }
 
