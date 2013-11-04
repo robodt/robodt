@@ -105,6 +105,10 @@ class Robodt
         $file = array();
         $file[] = $this->api['site']['content'];
 
+        if (count($uri) < 1) {
+            $uri = 'home';
+        }
+
         if (isset( $this->api['index'][ DIRECTORY_SEPARATOR . $this->generatePath( $uri ) ] ) ) {
             $file[] = $this->api['index'][ DIRECTORY_SEPARATOR . $this->generatePath( $uri ) ];
         }
