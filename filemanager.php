@@ -14,10 +14,12 @@ use DirectoryIterator;
 class FileManager {
 
     protected $index;
+    protected $navigation;
 
     public function __construct()
     {
         $this->index = array();
+        $this->navigation = array();
     }
 
 	/**
@@ -50,6 +52,11 @@ class FileManager {
         return $data;
     }
 
+    public function getIndex()
+    {
+        return $this->index;
+    }
+
     public function generateIndex($tree, $uri = '', $path = '')
     {
         foreach ($tree as $key => $value) {
@@ -65,9 +72,16 @@ class FileManager {
         }
     }
 
-    public function getIndex()
+    public function getNavigation()
     {
-        return $this->index;
+        return $this->navigation;
+    }
+
+    public function generateNavigation($tree, $uri = '')
+    {
+        foreach ($tree as $key => $value) {
+            
+        }
     }
 
     public function generateUrl($input)
