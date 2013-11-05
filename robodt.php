@@ -16,7 +16,6 @@ require __dir__.DIRECTORY_SEPARATOR.'settings.php';
 require __dir__.DIRECTORY_SEPARATOR.'filemanager.php';
 require __dir__.DIRECTORY_SEPARATOR.'meta.php';
 require __dir__.DIRECTORY_SEPARATOR.'content.php';
-require __dir__.DIRECTORY_SEPARATOR.'navigation.debug.php'; // NOTE: implement the real deal
 
 use Robodt\Debug;
 use Robodt\Hooks;
@@ -25,7 +24,6 @@ use Robodt\Settings;
 use Robodt\FileManager;
 use Robodt\Meta;
 use Robodt\Content;
-use Robodt\DebugNavigation; // TODO: implement the real deal
 
 class Robodt
 {
@@ -48,7 +46,6 @@ class Robodt
         $this->content = new Content;
         $this->api = array();
         $this->registerHooks();
-        $this->navigation = new DebugNavigation; // TODO: implement the real deal
     }
 
     /**
@@ -87,12 +84,10 @@ class Robodt
         // Fill API values
         $this->api['site']['directory'] = $this->generatePath( array( $root, $site ) );
         $this->api['site']['content'] = $this->generatePath( array( $root, $site, $content ) );
-        $this->api['filetree'] = $this->filemanager->getTree( $this->api['site']['content'] );
 
-        // Generate url and file mappings
-        $this->filemanager->generateIndex( $this->api['filetree'] );
-        $this->api['index'] = $this->filemanager->getIndex();
-        $this->api['navigation'] = $this->navigation->items();
+        // Generate file and url indexes
+        $this->api['filetree'] = $this->filemanager->getTree( $this->api['site']['content'] );
+        $this->api['index'] = $this->filemanager->generateIndex( $this->api['filetree'] );
     }
 
     /**
@@ -102,6 +97,8 @@ class Robodt
      */
     public function requestRender($uri)
     {
+        $this->api['navigation'] = $this->filemanager->generateNavigation( $uri, $this->api['filetree'] );
+
         $file = array();
         $file[] = $this->api['site']['content'];
 
