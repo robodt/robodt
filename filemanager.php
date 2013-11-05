@@ -59,17 +59,23 @@ class FileManager {
 
     public function generateIndex($tree, $uri = '', $path = '')
     {
+        $index = array();
+
         foreach ($tree as $key => $value) {
             if (is_array($value)) {
-                $this->generateIndex(
-                    $value,
-                    $uri . DIRECTORY_SEPARATOR . $this->generateUrl($key),
-                    $path . DIRECTORY_SEPARATOR . $key );
+                $index = array_merge($index,
+                    $this->generateIndex(
+                        $value,
+                        $uri . DIRECTORY_SEPARATOR . $this->generateUrl($key),
+                        $path . DIRECTORY_SEPARATOR . $key )
+                    );
             }
             if ($value == 'index.txt') {
-                $this->index[$uri] = $path . DIRECTORY_SEPARATOR . 'index.txt';
+                $index[$uri] = $path . DIRECTORY_SEPARATOR . 'index.txt';
             }
         }
+
+        return $index;
     }
 
     public function getNavigation()
@@ -77,11 +83,47 @@ class FileManager {
         return $this->navigation;
     }
 
-    public function generateNavigation($tree, $uri = '')
+    public function generateNavigation($request, $tree, $current = '', $level = -1, $active = false, $uri = array())
     {
+        $navigation = array();
+        $items = array();
+
+        // Loop through tree
         foreach ($tree as $key => $value) {
-            
+
+            // Generate current values
+            $tmp_uri = $uri;
+            $tmp_uri[] = $this->generateUrl($key);
+            $active = ( ( $uri[$level] == $request[$level] && ( $level == 0 || $active ) ) ? true : false );
+
+            // Recursion
+            if (is_array($value)) {
+                $items[] = $this->generateNavigation(
+                    $request,
+                    $value,
+                    $key,
+                    $level + 1,
+                    $active,
+                    $tmp_uri
+                );
+            }
+
+            // Index found, add page
+            if ($value == 'index.txt') {
+                $navigation['title'] = $current;
+                $navigation['url'] = '/' . implode('/', $uri);
+                $navigation['active'] = $active;
+            }
         }
+
+        // Add items value
+        $navigation['items'] = (count($items) > 0 ? $items : false );
+
+        // Remove items value for highest records
+        $navigation = ($level < 0 ? $navigation['items'] : $navigation);
+
+        // Return records
+        return $navigation;
     }
 
     public function generateUrl($input)
