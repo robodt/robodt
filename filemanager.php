@@ -9,17 +9,20 @@
 
 namespace Robodt;
 
+use Robodt\Content;
 use DirectoryIterator;
 
 class FileManager {
 
     protected $index;
     protected $navigation;
+    protected $content;
 
     public function __construct()
     {
         $this->index = array();
         $this->navigation = array();
+        $this->content = new Content;
     }
 
 	/**
@@ -83,7 +86,7 @@ class FileManager {
         return $this->navigation;
     }
 
-    public function generateNavigation($request, $tree, $current = '', $level = -1, $active = false, $uri = array())
+    public function generateNavigation($request, $tree, $current = '', $level = -1, $active = false, $uri = array(), $path = array())
     {
         $navigation = array();
         $items = array();
@@ -94,25 +97,30 @@ class FileManager {
             // Generate current values
             $tmp_uri = $uri;
             $tmp_uri[] = $this->generateUrl($key);
+            $tmp_path = $path;
             $active = ( ( $uri[$level] == $request[$level] && ( $level == 0 || $active ) ) ? true : false );
 
             // Recursion
             if (is_array($value)) {
+                $tmp_path[] = $key;
                 $items[] = $this->generateNavigation(
                     $request,
                     $value,
                     $key,
                     $level + 1,
                     $active,
-                    $tmp_uri
+                    $tmp_uri,
+                    $tmp_path
                 );
             }
 
             // Index found, add page
             if ($value == 'index.txt') {
+                $tmp_path[] = 'index.txt';
                 $navigation['title'] = $current;
                 $navigation['url'] = '/' . implode('/', $uri);
                 $navigation['active'] = $active;
+                $navigation['debug'] = $this->content->parseFile($tmp_path);
             }
         }
 
