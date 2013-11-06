@@ -133,6 +133,7 @@ class Robodt
      */
     public function render($uri)
     {
+        // NOTE: filter uri
         $this->hooks->execute('init');
         $this->hooks->execute('request.prerender');
         $this->hooks->execute('request.render', array($uri));
