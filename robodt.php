@@ -131,9 +131,9 @@ class Robodt
      * @param string $site Hostname - optional
      * @return array API data
      */
-    public function render($uri, $site = false)
+    public function render($uri)
     {
-        $this->hooks->execute('init', array($site));
+        $this->hooks->execute('init');
         $this->hooks->execute('request.prerender');
         $this->hooks->execute('request.render', array($uri));
         $this->hooks->execute('request.postrender');
