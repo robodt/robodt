@@ -9,19 +9,16 @@
 
 namespace Robodt;
 
+use Robodt\Filters;
 use Robodt\Content;
 use DirectoryIterator;
 
 class FileManager {
 
-    protected $index;
-    protected $navigation;
     protected $content;
 
     public function __construct()
     {
-        $this->index = array();
-        $this->navigation = array();
         $this->content = new Content;
     }
 
@@ -55,11 +52,6 @@ class FileManager {
         return $data;
     }
 
-    public function getIndex()
-    {
-        return $this->index;
-    }
-
     public function generateIndex($tree, $uri = '', $path = '')
     {
         $index = array();
@@ -69,7 +61,7 @@ class FileManager {
                 $index = array_merge($index,
                     $this->generateIndex(
                         $value,
-                        $uri . DIRECTORY_SEPARATOR . $this->generateUrl($key),
+                        $uri . DIRECTORY_SEPARATOR . Filters::pathToUri($key),
                         $path . DIRECTORY_SEPARATOR . $key )
                     );
             }
@@ -79,11 +71,6 @@ class FileManager {
         }
 
         return $index;
-    }
-
-    public function getNavigation()
-    {
-        return $this->navigation;
     }
 
     public function generateNavigation($request, $tree, $current = '', $level = -1, $active = false, $uri = array(), $path = array())
@@ -96,7 +83,7 @@ class FileManager {
 
             // Generate current values
             $tmp_uri = $uri;
-            $tmp_uri[] = $this->generateUrl($key);
+            $tmp_uri[] = Filters::pathToUri($key);
             $tmp_path = $path;
             $active = ( ( $uri[$level] == $request[$level] && ( $level == 0 || $active ) ) ? true : false );
 
@@ -132,24 +119,6 @@ class FileManager {
 
         // Return records
         return $navigation;
-    }
-
-    public function generateUrl($input)
-    {
-        $input = explode('.', $input);
-
-        if (is_array($input) && count($input) < 2) {
-            $input = $input[0];
-        }
-
-        if (is_array($input) && count($input) > 1) {
-            array_shift( $input );
-
-            if (is_array($input)) {
-                $input = implode('.', $input);
-            }
-        }
-        return $input;
     }
 
 }

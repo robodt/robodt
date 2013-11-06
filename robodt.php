@@ -9,6 +9,7 @@
 
 namespace Robodt;
 
+require __dir__.DIRECTORY_SEPARATOR.'filters.php';
 require __dir__.DIRECTORY_SEPARATOR.'debug.php';
 require __dir__.DIRECTORY_SEPARATOR.'hooks.php';
 require __dir__.DIRECTORY_SEPARATOR.'actions.php';
@@ -17,6 +18,7 @@ require __dir__.DIRECTORY_SEPARATOR.'filemanager.php';
 require __dir__.DIRECTORY_SEPARATOR.'meta.php';
 require __dir__.DIRECTORY_SEPARATOR.'content.php';
 
+use Robodt\Filters;
 use Robodt\Debug;
 use Robodt\Hooks;
 use Robodt\Actions;
@@ -82,8 +84,8 @@ class Robodt
         $content = $this->settings->get('dir.content');
 
         // Fill API values
-        $this->api['site']['directory'] = $this->generatePath( array( $root, $site ) );
-        $this->api['site']['content'] = $this->generatePath( array( $root, $site, $content ) );
+        $this->api['site']['directory'] = Filters::arrayToUri( array( $root, $site ) );
+        $this->api['site']['content'] = Filters::arrayToUri( array( $root, $site, $content ) );
 
         // Generate file and url indexes
         $this->api['filetree'] = $this->filemanager->getTree( $this->api['site']['content'] );
@@ -106,25 +108,11 @@ class Robodt
             $uri = 'home';
         }
 
-        if (isset( $this->api['index'][ DIRECTORY_SEPARATOR . $this->generatePath( $uri ) ] ) ) {
-            $file[] = $this->api['index'][ DIRECTORY_SEPARATOR . $this->generatePath( $uri ) ];
+        if (isset( $this->api['index'][ DIRECTORY_SEPARATOR . Filters::arrayToUri( $uri ) ] ) ) {
+            $file[] = $this->api['index'][ DIRECTORY_SEPARATOR . Filters::arrayToUri( $uri ) ];
         }
 
         $this->api['request'] = $this->content->parseFile($file);
-    }
-
-    /**
-     * Generate, filter and stringify file path's
-     *
-     * @param string or array $path File path to filter and transform
-     * @return string Filtered and stringified file path
-     */
-    public function generatePath($path)
-    {
-        if (is_array($path)) {
-            $path = implode(DIRECTORY_SEPARATOR, $path);
-        }
-        return $path;
     }
 
     /**
