@@ -75,19 +75,19 @@ class Robodt
      */
     public function loadApi()
     {
-        // Render settings
         $this->api['settings'] = $this->settings->get_all();
 
-        // Get needed settings
-        $root = $this->settings->get('dir.root');
-        $site = $this->settings->get('dir.site');
-        $content = $this->settings->get('dir.content');
+        $this->api['site']['directory'] = Filters::arrayToUri(array(
+            $this->settings->get('dir.root'),
+            $this->settings->get('dir.site')
+            ));
 
-        // Fill API values
-        $this->api['site']['directory'] = Filters::arrayToUri( array( $root, $site ) );
-        $this->api['site']['content'] = Filters::arrayToUri( array( $root, $site, $content ) );
+        $this->api['site']['content'] = Filters::arrayToUri(array(
+            $this->settings->get('dir.root'),
+            $this->settings->get('dir.site'),
+            $this->settings->get('dir.content')
+            ));
 
-        // Generate file and url indexes
         $this->api['filetree'] = $this->filemanager->getTree( $this->api['site']['content'] );
         $this->api['index'] = $this->filemanager->generateIndex( $this->api['filetree'] );
     }
