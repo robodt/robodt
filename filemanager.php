@@ -22,6 +22,40 @@ class FileManager {
         $this->content = new Content;
     }
 
+
+
+    /****** New implementation ******/
+
+
+    // Filetree
+    // Index
+    // Navigation
+
+
+    public function indexContent($dir, $uri = array())
+    {
+        //
+    }
+
+    private function createDirectoryObject($dir)
+    {
+        return new DirectoryIterator( ( is_array($dir) ? Filters::arrayToPath($dir) : $dir ) );
+    }
+
+/*
+
+- Check if file or dir
+- If dir, recursion
+- If index:
+    - Render metadata
+    - Create index record (uri/path)
+    - Create Navigation item
+
+*/
+
+    /****** Old implementation ******/
+
+
 	/**
 	 * Transform filepath to DirectoryIterator
 	 *
