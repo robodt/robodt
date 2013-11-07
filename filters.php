@@ -80,4 +80,15 @@ class Filters
         return ( is_array($uri) ? implode('/', $uri) : $uri );
     }
 
+    static function uriToArray($uri)
+    {
+        return explode('/', $uri);
+    }
+
+    static function uriRemovePrefix($uri)
+    {
+        $uri = self::arrayToUri($uri);
+        return ( substr($uri, 0, 1) == '/' ? substr($uri, 1) : $uri );
+    }
+
 }
