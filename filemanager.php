@@ -44,12 +44,21 @@ class FileManager {
 
 /*
 
-- Check if file or dir
-- If dir, recursion
-- If index:
-    - Render metadata
-    - Create index record (uri/path)
-    - Create Navigation item
+- List directory
+    - If dir:
+        - Add to tree
+        - Recursion for children files/folders
+    - If index:
+        - Add to tree
+        - Render metadata
+        - Create index record:
+            uri
+            path
+        - Create Navigation item:
+            title
+            uri
+            active
+            subitems
 
 */
 
