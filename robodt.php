@@ -100,11 +100,16 @@ class Robodt
 
         $file = array();
         $file[] = $this->api['site']['content'];
+
         if (isset( $this->api['index'][ Filters::arrayToUri( $uri ) ] ) ) {
             $file[] = $this->api['index'][ Filters::arrayToUri( $uri ) ];
+        } else {
+            $file[] = '404';
         }
 
         $this->api['request'] = $this->content->parseFile($file);
+        $this->api['request']['uri'] = $uri;
+        $this->api['request']['file'] = $file;
     }
 
     /**
