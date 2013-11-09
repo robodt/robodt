@@ -77,12 +77,12 @@ class Robodt
     {
         $this->api['settings'] = $this->settings->get_all();
 
-        $this->api['site']['directory'] = Filters::arrayToUri(array(
+        $this->api['settings']['site.directory'] = Filters::arrayToUri(array(
             $this->settings->get('dir.root'),
             $this->settings->get('dir.site')
             ));
 
-        $this->api['site']['content'] = Filters::arrayToUri(array(
+        $this->api['settings']['site.content'] = Filters::arrayToUri(array(
             $this->settings->get('dir.root'),
             $this->settings->get('dir.site'),
             $this->settings->get('dir.content')
@@ -96,10 +96,10 @@ class Robodt
      */
     public function requestRender($uri)
     {
-        $this->api = array_merge($this->api, $this->filemanager->indexContent( $this->api['site']['content'], $uri ) );
+        $this->api = array_merge($this->api, $this->filemanager->indexContent( $this->api['settings']['site.content'], $uri ) );
 
         $file = array();
-        $file[] = $this->api['site']['content'];
+        $file[] = $this->api['settings']['site.content'];
 
         if (isset( $this->api['index'][ Filters::arrayToUri( $uri ) ] ) ) {
             $file[] = $this->api['index'][ Filters::arrayToUri( $uri ) ];
