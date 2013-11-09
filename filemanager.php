@@ -17,48 +17,19 @@ class FileManager {
 
     protected $content;
     protected $dir;
+    protected $index;
 
     public function __construct()
     {
         $this->content = new Content;
     }
 
-
-    /****** New implementation ******/
-
-/*
-
-Generate:
-- Filetree
-- Index
-- Navigation
-
-Approach:
-- List directory
-    - If dir:
-        - Add to tree
-        - Recursion for children files/folders
-    - If index:
-        - Add to tree
-        - Render metadata
-        - Create index record:
-            uri
-            path
-        - Create Navigation item:
-            title
-            uri
-            active
-            subitems
-
-*/
-
-    public function indexContent($dir, $uri = array(), $home = array())
+    public function indexContent($dir, $request = array())
     {
-        $data = array();
+        $this->dir = Filters::arrayToPath($dir);
         $dir = $this->createDirectoryObject($dir);
-        $data['filetree'] = $this->createTree($dir);
-        $data['index'] = $this->createIndex($data['tree']);
-        $data['navigation'] = $this->createNavigation($data['tree']);
+        $data = $this->contentCrawler($dir, $request);
+        $data['index'] = $this->index;
         return $data;
     }
 
@@ -67,131 +38,86 @@ Approach:
         return new DirectoryIterator( ( is_array($dir) ? Filters::arrayToPath($dir) : $dir ) );
     }
 
-    private function createTree(DirectoryIterator $dir)
+    private function contentCrawler( DirectoryIterator $dir, $request, $uri = array(), $path = array() )
     {
         $data = array();
-        foreach ( $dir as $node ) {
-            if ( $node->isDir() && !$node->isDot() ) {
-                $data[$node->getFilename()] = $this->generateTree( new DirectoryIterator( $node->getPathname() ) );
-            } else if ( $node->isFile() ) {
-                if ( substr( $node->getFilename(), 0, 1) != '.') {
-                    $data[] = $node->getFilename();
-                }
-            }
+
+        $current_metadata = $this->getMetadata($path);
+
+        if ($current_metadata) {
+
+            $current_uri = $uri;
+            $current_uri[] = $this->createUri($path, $current_metadata);
+
+            $this->createIndex($path, $current_uri);
+
+            $current_navigation = $this->createNavigation( $request, $current_uri, $current_metadata );
         }
-        return $data;
-    }
 
+        foreach ($dir as $node) {
 
-    /****** Old implementation ******/
+            if ($node->isDir() && !$node->isDot()) {
 
+                $new_path = $path;
+                $new_path[] = $node->getFilename();
 
-	/**
-	 * Transform filepath to DirectoryIterator
-	 *
-	 * @param array or string $dir Path to transform
-	 * @return array Directory tree
-	 */
-    public function getTree($dir)
-    {
-        $this->dir = Filters::arrayToPath($dir);
-        return $this->generateTree(
-            $this->createDirectoryObject($dir) );
-    }
-
-    private function generateTree( DirectoryIterator $dir )
-    {
-        $data = array();
-        foreach ( $dir as $node ) {
-            if ( $node->isDir() && !$node->isDot() ) {
-                $data[$node->getFilename()] = $this->generateTree( new DirectoryIterator( $node->getPathname() ) );
-            } else if ( $node->isFile() ) {
-                if ( substr( $node->getFilename(), 0, 1) != '.') {
-                    $data[] = $node->getFilename();
-                }
-            }
-        }
-        return $data;
-    }
-
-    public function generateIndex($tree, $uri = '', $path = '')
-    {
-        $index = array();
-
-        foreach ($tree as $key => $value) {
-            if (is_array($value)) {
-                $index = array_merge($index,
-                    $this->generateIndex(
-                        $value,
-                        $uri . DIRECTORY_SEPARATOR . Filters::pathToUri($key),
-                        $path . DIRECTORY_SEPARATOR . $key )
-                    );
-            }
-            if ($value == 'index.txt') {
-                $tmp_file = $this->dir . Filters::arrayToPath($path) . DIRECTORY_SEPARATOR . 'index.txt';
-                $tmp_file = $this->content->parseFile( $tmp_file );
-                $uri = ( isset($tmp_file['metadata']['url']) ? $tmp_file['metadata']['url'] : $uri );
-                $index[$uri] = $path . DIRECTORY_SEPARATOR . 'index.txt';
-            }
-        }
-        return $index;
-    }
-
-    public function generateNavigation($request, $tree, $current = '', $level = -1, $active = false, $uri = array(), $path = array())
-    {
-        $navigation = array();
-        $items = array();
-
-        // Loop through tree
-        foreach ($tree as $key => $value) {
-
-            // Generate current values
-            $tmp_uri = $uri;
-            $tmp_uri[] = Filters::pathToUri($key);
-            $tmp_path = $path;
-            $tmp_file = null;
-            $tmp_active = ( ( $uri[$level] == $request[$level] && ( $level == 0 || $active ) ) ? true : false );
-
-            // Recursion
-            if (is_array($value)) {
-                $tmp_path[] = $key;
-                $items[] = $this->generateNavigation(
+                $sub = $this->contentCrawler(
+                    new DirectoryIterator( $node->getPathname() ),
                     $request,
-                    $value,
-                    $key,
-                    $level + 1,
-                    $tmp_active,
-                    $tmp_uri,
-                    $tmp_path
-                );
-            }
+                    $current_uri,
+                    $new_path);
 
-            // Index found, add page
-            if ($value == 'index.txt') {
-                array_unshift($tmp_path, $this->dir);
-                array_push($tmp_path, 'index.txt');
-                $tmp_path = Filters::arrayToPath( $tmp_path );
-                $tmp_file = $this->content->parseFile( $tmp_path );
-                $navigation['title'] = $tmp_file['metadata']['title'];
-                $navigation['title'] = ( isset($tmp_file['metadata']['navigation']) ? $tmp_file['metadata']['navigation'] : $navigation['title'] );
-                $navigation['url'] = ( isset($tmp_file['metadata']['url']) ? $tmp_file['metadata']['url'] : '/' . implode('/', $uri) );
-                if (isset($tmp_file['metadata']['url'])) {
-                    $navigation['active'] = ( ( Filters::uriRemovePrefix( $tmp_file['metadata']['url'] ) == $request[$level] && ( $level == 0 || $active ) ) ? true : $tmp_active );
-                } else {
-                    $navigation['active'] = $tmp_active;
+                $data['tree'][$node->getFilename()] = $sub['tree'];
+
+                if ($sub['navigation']) {
+                    $current_navigation['items'][] = $sub['navigation'];
                 }
 
+            } else if ($node->isFile() && substr($node->getFilename(), 0, 1) != '.') {
+                $data['tree'][] = $node->getFilename();
             }
         }
 
-        // Add items value
-        $navigation['items'] = (count($items) > 0 ? $items : false );
+        $current_navigation['items'] = ( ( count($current_navigation['items']) > 0 ) ? $current_navigation['items'] : false );
+        $data['navigation'] = ( ( count($path) > 0 ) ? $current_navigation : $current_navigation['items'] );
 
-        // Remove items value for highest records
-        $navigation = ($level < 0 ? $navigation['items'] : $navigation);
+        return $data;
+    }
 
-        // Return records
-        return $navigation;
+    private function getMetadata($path)
+    {
+        $file = array();
+        $file[] = $this->dir;
+        if ( count($path) > 0 ) $file = array_merge($file, $path);
+        $file[] = 'index.txt';
+        $file = $this->content->parseFile( $file );
+        return ( ( $file['status'] == 200 ) ? $file['metadata'] : false );
+    }
+
+    private function createUri($path, $metadata)
+    {
+        if ($metadata && isset($metadata['url'])) {
+            return $metadata['url'];
+        } else {
+            return Filters::pathToUri(end($path));
+        }
+    }
+
+    private function createIndex($path, $uri)
+    {
+        $path[] = 'index.txt';
+        $this->index[Filters::arrayToUri($uri)] = Filters::arrayToPath($path);
+    }
+
+    private function createNavigation($request, $uri, $metadata)
+    {
+        $data = array();
+        $data['title'] = ( isset($metadata['title']) ? $metadata['title'] : end($uri) );
+        $data['title'] = ( isset($metadata['navigation']) ? $metadata['navigation'] : $data['title']);
+        $data['url'] = Filters::arrayToUri($uri);
+        $level = count($uri);
+        $data['active'] = ( ( Filters::arrayToUri( array_slice($request, 0, $level) ) == Filters::arrayToUri( $uri ) ) ? true : false );
+        return $data;
     }
 
 }
