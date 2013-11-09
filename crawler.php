@@ -58,25 +58,28 @@ class Crawler {
 
         foreach ($dir as $node) {
 
-            if ($node->isDir() && !$node->isDot()) {
+            if (substr($node->getFilename(), 0, 1) != '.') {
 
-                $new_path = $path;
-                $new_path[] = $node->getFilename();
+                if ($node->isDir() && !$node->isDot()) {
 
-                $sub = $this->contentCrawler(
-                    new DirectoryIterator( $node->getPathname() ),
-                    $request,
-                    $current_uri,
-                    $new_path);
+                    $new_path = $path;
+                    $new_path[] = $node->getFilename();
 
-                $data['tree'][$node->getFilename()] = $sub['tree'];
+                    $sub = $this->contentCrawler(
+                        new DirectoryIterator( $node->getPathname() ),
+                        $request,
+                        $current_uri,
+                        $new_path);
 
-                if ($sub['navigation']) {
-                    $current_navigation['items'][] = $sub['navigation'];
+                    $data['tree'][$node->getFilename()] = $sub['tree'];
+
+                    if ($sub['navigation']) {
+                        $current_navigation['items'][] = $sub['navigation'];
+                    }
+
+                } else if ($node->isFile()) {
+                    $data['tree'][] = $node->getFilename();
                 }
-
-            } else if ($node->isFile() && substr($node->getFilename(), 0, 1) != '.') {
-                $data['tree'][] = $node->getFilename();
             }
 
             // http://us2.php.net/manual/en/function.array-diff-assoc.php
