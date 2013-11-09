@@ -25,7 +25,6 @@ use Robodt\Content;
 
 class Robodt
 {
-    public $debug;
     public $hooks;
     public $actions;
     protected $settings;
@@ -33,9 +32,11 @@ class Robodt
     protected $content;
     protected $api;
     protected $navigation;
+    protected $site;
 
-    public function __construct()
+    public function __construct($site)
     {
+        $this->site = $site;
         $this->hooks = new Hooks;
         $this->actions = new Actions;
         $this->settings = new Settings;
@@ -60,7 +61,15 @@ class Robodt
      */
     public function loadSettings()
     {
-        $this->settings->load('settings.php');
+        $this->settings->load(
+            Filters::arrayToPath(
+                array(
+                    $this->site,
+                    'settings',
+                    'settings.php'
+                    )
+                )
+            );
     }
 
     /**
@@ -89,10 +98,11 @@ class Robodt
      */
     public function requestRender($uri)
     {
-        $this->api = array_merge($this->api, $this->crawler->indexContent( $this->api['settings']['site.content'], $uri ) );
+        $content = Filters::arrayToPath( array( $this->site, 'content' ) );
+        $this->api = array_merge($this->api, $this->crawler->indexContent( $content, $uri ) );
 
         $file = array();
-        $file[] = $this->api['settings']['site.content'];
+        $file[] = $content;
 
         if (isset( $this->api['index'][ Filters::arrayToUri( $uri ) ] ) ) {
             $file[] = $this->api['index'][ Filters::arrayToUri( $uri ) ];
