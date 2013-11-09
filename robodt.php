@@ -60,13 +60,7 @@ class Robodt
      */
     public function loadSettings()
     {
-        $this->settings->load(
-            Filters::arrayToPath(
-                array(
-                    $_SERVER['DOCUMENT_ROOT'],
-                    'settings.php')
-                )
-            );
+        $this->settings->load('settings.php');
     }
 
     /**
