@@ -18,6 +18,7 @@ class FileManager {
     protected $content;
     protected $dir;
     protected $index;
+    // protected $cache;
 
     public function __construct()
     {
@@ -30,6 +31,7 @@ class FileManager {
         $dir = $this->createDirectoryObject($dir);
         $data = $this->contentCrawler($dir, $request);
         $data['index'] = $this->index;
+        // $data['cache'] = $this->cache;
         return $data;
     }
 
@@ -76,6 +78,9 @@ class FileManager {
             } else if ($node->isFile() && substr($node->getFilename(), 0, 1) != '.') {
                 $data['tree'][] = $node->getFilename();
             }
+
+            // http://us2.php.net/manual/en/function.array-diff-assoc.php
+            // $this->cache[ Filters::arrayToPath( array($node->getPathname(), $node->getFilename()) ) ] = $node->getCTime();
         }
 
         $current_navigation['items'] = ( ( count($current_navigation['items']) > 0 ) ? $current_navigation['items'] : false );
