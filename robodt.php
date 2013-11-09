@@ -10,21 +10,17 @@
 namespace Robodt;
 
 require __dir__.DIRECTORY_SEPARATOR.'filters.php';
-require __dir__.DIRECTORY_SEPARATOR.'debug.php';
 require __dir__.DIRECTORY_SEPARATOR.'hooks.php';
 require __dir__.DIRECTORY_SEPARATOR.'actions.php';
 require __dir__.DIRECTORY_SEPARATOR.'settings.php';
 require __dir__.DIRECTORY_SEPARATOR.'crawler.php';
-require __dir__.DIRECTORY_SEPARATOR.'meta.php';
 require __dir__.DIRECTORY_SEPARATOR.'content.php';
 
 use Robodt\Filters;
-use Robodt\Debug;
 use Robodt\Hooks;
 use Robodt\Actions;
 use Robodt\Settings;
 use Robodt\Crawler;
-use Robodt\Meta;
 use Robodt\Content;
 
 class Robodt
@@ -40,7 +36,6 @@ class Robodt
 
     public function __construct()
     {
-        $this->debug = new Debug;
         $this->hooks = new Hooks;
         $this->actions = new Actions;
         $this->settings = new Settings;
