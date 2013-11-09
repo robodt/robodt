@@ -58,8 +58,6 @@ class Robodt
         $this->hooks->register('init', 'loadSettings', $this, 100);
         $this->hooks->register('request.prerender', 'loadApi', $this, 100);
         $this->hooks->register('request.render', 'requestRender', $this, 100);
-        $this->hooks->register('request.postrender', 'debugApi', $this, 100);
-        $this->debug->log( array('Robodt Location' => __dir__ . DIRECTORY_SEPARATOR) );
     }
 
     /**
@@ -110,15 +108,6 @@ class Robodt
         $this->api['request'] = $this->content->parseFile($file);
         $this->api['request']['uri'] = $uri;
         $this->api['request']['file'] = $file;
-    }
-
-    /**
-     * Debug API
-     */
-    public function debugApi()
-    {
-        $this->debug->log( array( 'API' => $this->api ) );
-        $this->api['debug'] = $this->debug->logArray();
     }
 
     /**
