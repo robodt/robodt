@@ -14,7 +14,7 @@ require __dir__.DIRECTORY_SEPARATOR.'debug.php';
 require __dir__.DIRECTORY_SEPARATOR.'hooks.php';
 require __dir__.DIRECTORY_SEPARATOR.'actions.php';
 require __dir__.DIRECTORY_SEPARATOR.'settings.php';
-require __dir__.DIRECTORY_SEPARATOR.'filemanager.php';
+require __dir__.DIRECTORY_SEPARATOR.'crawler.php';
 require __dir__.DIRECTORY_SEPARATOR.'meta.php';
 require __dir__.DIRECTORY_SEPARATOR.'content.php';
 
@@ -23,7 +23,7 @@ use Robodt\Debug;
 use Robodt\Hooks;
 use Robodt\Actions;
 use Robodt\Settings;
-use Robodt\FileManager;
+use Robodt\Crawler;
 use Robodt\Meta;
 use Robodt\Content;
 
@@ -33,7 +33,7 @@ class Robodt
     public $hooks;
     public $actions;
     protected $settings;
-    protected $filemanager;
+    protected $crawler;
     protected $content;
     protected $api;
     protected $navigation;
@@ -44,7 +44,7 @@ class Robodt
         $this->hooks = new Hooks;
         $this->actions = new Actions;
         $this->settings = new Settings;
-        $this->filemanager = new FileManager;
+        $this->crawler = new Crawler;
         $this->content = new Content;
         $this->api = array();
         $this->registerHooks();
@@ -96,7 +96,7 @@ class Robodt
      */
     public function requestRender($uri)
     {
-        $this->api = array_merge($this->api, $this->filemanager->indexContent( $this->api['settings']['site.content'], $uri ) );
+        $this->api = array_merge($this->api, $this->crawler->indexContent( $this->api['settings']['site.content'], $uri ) );
 
         $file = array();
         $file[] = $this->api['settings']['site.content'];

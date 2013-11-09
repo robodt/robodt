@@ -13,7 +13,7 @@ use Robodt\Filters;
 use Robodt\Content;
 use DirectoryIterator;
 
-class FileManager {
+class Crawler {
 
     protected $content;
     protected $dir;
