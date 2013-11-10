@@ -9,13 +9,6 @@
 
 namespace Robodt;
 
-require __dir__.DIRECTORY_SEPARATOR.'filters.php';
-require __dir__.DIRECTORY_SEPARATOR.'hooks.php';
-require __dir__.DIRECTORY_SEPARATOR.'actions.php';
-require __dir__.DIRECTORY_SEPARATOR.'settings.php';
-require __dir__.DIRECTORY_SEPARATOR.'crawler.php';
-require __dir__.DIRECTORY_SEPARATOR.'content.php';
-
 use Robodt\Filters;
 use Robodt\Hooks;
 use Robodt\Actions;
@@ -78,17 +71,6 @@ class Robodt
     public function loadApi()
     {
         $this->api['settings'] = $this->settings->get_all();
-
-        $this->api['settings']['site.directory'] = Filters::arrayToUri(array(
-            $this->settings->get('dir.root'),
-            $this->settings->get('dir.site')
-            ));
-
-        $this->api['settings']['site.content'] = Filters::arrayToUri(array(
-            $this->settings->get('dir.root'),
-            $this->settings->get('dir.site'),
-            $this->settings->get('dir.content')
-            ));
     }
 
     /**
