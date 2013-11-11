@@ -87,6 +87,7 @@ class Crawler {
         }
 
         $current_navigation['items'] = ( ( count($current_navigation['items']) > 0 ) ? $current_navigation['items'] : false );
+        $current_navigation = ( ( $current_navigation['hidden'] ) ? false : $current_navigation );
         $data['navigation'] = ( ( count($path) > 0 ) ? $current_navigation : $current_navigation['items'] );
 
         return $data;
@@ -120,11 +121,15 @@ class Crawler {
     private function createNavigation($request, $uri, $metadata)
     {
         $data = array();
-        $data['title'] = ( isset($metadata['title']) ? $metadata['title'] : end($uri) );
-        $data['title'] = ( isset($metadata['navigation']) ? $metadata['navigation'] : $data['title']);
-        $data['url'] = Filters::arrayToUri($uri);
-        $level = count($uri);
-        $data['active'] = ( ( Filters::arrayToUri( array_slice($request, 0, $level) ) == Filters::arrayToUri( $uri ) ) ? true : false );
+        if ($metadata['hidden'] == 'true') {
+            $data['hidden'] = true;
+        } else {
+            $data['title'] = ( isset($metadata['title']) ? $metadata['title'] : end($uri) );
+            $data['title'] = ( isset($metadata['navigation']) ? $metadata['navigation'] : $data['title']);
+            $data['url'] = Filters::arrayToUri($uri);
+            $level = count($uri);
+            $data['active'] = ( ( Filters::arrayToUri( array_slice($request, 0, $level) ) == Filters::arrayToUri( $uri ) ) ? true : false );
+        }
         return $data;
     }
 
