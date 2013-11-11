@@ -1,8 +1,8 @@
 {
 	"name": "robodt/robodt",
 	"type": "library",
-	"description": "",
-	"keywords": [""],
+	"description": "Flexible and lightweight file-based markdown CMS",
+	"keywords": ["cms", "markdown", "file-based", "robodt"],
 	"homepage": "http://robodt.io/",
 	"authors": [
 		{
