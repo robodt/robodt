@@ -64,10 +64,13 @@ class Content
 
             // Metadata found
             if (count($file) > 1) {
+                $content = $this->parseMarkdown($file[1]);
+                $metadata = $this->parseMetadata($file[0]);
+                $status = ( isset($metadata['status']) ? $metadata['status'] : 200 );
                 return array(
-                    'status' => 200,
-                    'content' => $this->parseMarkdown($file[1]),
-                    'metadata' => $this->parseMetadata($file[0]),
+                    'status' => $status,
+                    'content' => $content,
+                    'metadata' => $metadata,
                     );
 
             // No metadata found
