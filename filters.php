@@ -93,6 +93,11 @@ class Filters
         return explode('/', $uri);
     }
 
+    static function pathToArray($path)
+    {
+        return explode(DIRECTORY_SEPARATOR, $path);
+    }
+
     static function uriRemovePrefix($uri)
     {
         $uri = self::arrayToUri($uri);
