@@ -55,9 +55,8 @@ class Content
      */
     public function parseFile($file)
     {
-        if (is_array($file)) {
-            $file = implode(DIRECTORY_SEPARATOR, $file);
-        }
+        $file = Filters::arrayToPath($file);
+
         // File found
         if (file_exists($file)) {
             $file = file_get_contents($file, FILE_USE_INCLUDE_PATH);
