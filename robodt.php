@@ -90,6 +90,7 @@ class Robodt
             $file[] = $this->api['index'][ $request ];
         } else {
             $file[] = '404';
+            $file[] = 'index.txt';
         }
 
         $this->api['request'] = $this->content->parseFile($file);
