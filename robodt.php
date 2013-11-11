@@ -18,6 +18,7 @@ use Robodt\Content;
 
 class Robodt
 {
+    public $version = '0.1-dev';
     public $hooks;
     public $actions;
     protected $settings;
