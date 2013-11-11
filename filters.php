@@ -47,7 +47,7 @@ class Filters
     static function sanitizeUri($uri)
     {
         $uri = self::arrayToUri($uri);
-        $uri = str_replace(' ', '-', $uri);
+        $uri = str_replace(array(' ', './', '../', '/.'), '-', $uri);
         $uri = filter_var($uri, FILTER_SANITIZE_URL);
         $uri = filter_var($uri, FILTER_SANITIZE_ENCODED);
         return self::uriToArray($uri);
