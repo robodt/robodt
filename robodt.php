@@ -80,14 +80,14 @@ class Robodt
      */
     public function requestRender($uri)
     {
-        $content = Filters::arrayToPath( array( $this->site, 'content' ) );
-        $this->api = array_merge($this->api, $this->crawler->indexContent( $content, $uri ) );
-
         $file = array();
-        $file[] = $content;
+        $file[] = Filters::arrayToPath( array( $this->site, 'content' ) );
+        $request = Filters::arrayToUri( $uri );
 
-        if (isset( $this->api['index'][ Filters::arrayToUri( $uri ) ] ) ) {
-            $file[] = $this->api['index'][ Filters::arrayToUri( $uri ) ];
+        $this->api = array_merge($this->api, $this->crawler->indexContent( $file[0], $uri ) );
+
+        if (isset( $this->api['index'][ $request ] ) ) {
+            $file[] = $this->api['index'][ $request ];
         } else {
             $file[] = '404';
         }
