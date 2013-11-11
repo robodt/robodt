@@ -41,13 +41,21 @@ class Filters
     }
 
     /**
-     * Convertors
+     * Sanitizers
      */
 
-    static function uriToPath($uri)
+    static function sanitizeUri($uri)
     {
-        // impossible because loss of data?
+        $uri = self::arrayToUri($uri);
+        $uri = str_replace(' ', '-', $uri);
+        $uri = filter_var($uri, FILTER_SANITIZE_URL);
+        $uri = filter_var($uri, FILTER_SANITIZE_ENCODED);
+        return self::uriToArray($uri);
     }
+
+    /**
+     * Convertors
+     */
 
     static function pathToUri($path)
     {
