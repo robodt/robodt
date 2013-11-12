@@ -47,7 +47,7 @@ class Robodt
     {
         $this->hooks->register('init', 'loadSettings', $this, 100);
         $this->hooks->register('request.prerender', 'loadApi', $this, 100);
-        $this->hooks->register('request.render', 'requestRender', $this, 100);
+        $this->hooks->register('request.render', 'renderRequest', $this, 100);
     }
 
     /**
@@ -79,7 +79,7 @@ class Robodt
      * 
      * @param array $uri Uri from request
      */
-    public function requestRender($uri)
+    public function renderRequest($uri)
     {
         $file = array();
         $file[] = Filters::arrayToPath( array( $this->site, 'content' ) );
