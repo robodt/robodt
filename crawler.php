@@ -44,15 +44,12 @@ class Crawler {
     {
         $data = array();
 
+        $current_uri = $uri;
         $current_metadata = $this->getMetadata($path);
 
         if ($current_metadata) {
-
-            $current_uri = $uri;
             $current_uri[] = $this->createUri($path, $current_metadata);
-
             $this->createIndex($path, $current_uri);
-
             $current_navigation = $this->createNavigation( $request, $current_uri, $current_metadata );
         }
 
@@ -86,8 +83,8 @@ class Crawler {
             // $this->cache[ Filters::arrayToPath( array($node->getPathname(), $node->getFilename()) ) ] = $node->getCTime();
         }
 
-        $current_navigation['items'] = ( ( count($current_navigation['items']) > 0 ) ? $current_navigation['items'] : false );
-        $current_navigation = ( ( $current_navigation['hidden'] ) ? false : $current_navigation );
+        $current_navigation['items'] = ( ( isset($current_navigation['items']) && count($current_navigation['items']) > 0 ) ? $current_navigation['items'] : false );
+        $current_navigation = ( ( isset($current_metadata['hidden']) && $current_metadata['hidden'] == true ) ? false : $current_navigation );
         $data['navigation'] = ( ( count($path) > 0 ) ? $current_navigation : $current_navigation['items'] );
 
         return $data;
@@ -100,7 +97,7 @@ class Crawler {
         if ( count($path) > 0 ) $file = array_merge($file, $path);
         $file[] = 'index.txt';
         $file = $this->content->parseFile( $file );
-        return ( ( $file['status'] == 200 ) ? $file['metadata'] : false );
+        return ( isset($file['metadata']) ? $file['metadata'] : false );
     }
 
     private function createUri($path, $metadata)
@@ -121,7 +118,7 @@ class Crawler {
     private function createNavigation($request, $uri, $metadata)
     {
         $data = array();
-        if ($metadata['hidden'] == 'true') {
+        if (isset($metadata['hidden']) && $metadata['hidden'] == 'true') {
             $data['hidden'] = true;
         } else {
             $data['title'] = ( isset($metadata['title']) ? $metadata['title'] : end($uri) );
