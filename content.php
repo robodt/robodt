@@ -13,9 +13,6 @@ use dflydev\markdown\MarkdownParser as MarkdownParser;
 
 class Content
 {
-    // Content types
-    // Fields
-
     private $markdown;
     private $index;
     private $register;
@@ -92,6 +89,9 @@ class Content
 
     /**
      * Split metadata from content
+     *
+     * @param string $contents File content
+     * @return array Content in pieces
      */
     private function splitFile($contents)
     {
@@ -101,6 +101,9 @@ class Content
 
     /**
      * Parse metadata
+     *
+     * @param string $contents Content metadata
+     * @return array Metadata in key value format
      */
     private function parseMetadata($contents)
     {

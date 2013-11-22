@@ -13,8 +13,8 @@ use Robodt\Filters;
 use Robodt\Content;
 use DirectoryIterator;
 
-class Crawler {
-
+class Crawler
+{
     protected $content;
     protected $dir;
     protected $index;
@@ -25,6 +25,13 @@ class Crawler {
         $this->content = new Content;
     }
 
+    /**
+     * Index all content from directory
+     *
+     * @param array or string $dir Content directory to index
+     * @param array $request Current request URI
+     * @return array All data like index, file tree and navigation
+     */
     public function indexContent($dir, $request = array())
     {
         $this->dir = Filters::arrayToPath($dir);
@@ -35,11 +42,23 @@ class Crawler {
         return $data;
     }
 
+    /**
+     * Create Directory Object
+     *
+     * @param array or string $dir File path to create object from
+     * @return DirectoryIterator Object
+     */
     private function createDirectoryObject($dir)
     {
         return new DirectoryIterator( ( is_array($dir) ? Filters::arrayToPath($dir) : $dir ) );
     }
 
+    /**
+     * Content crawler
+     *
+     * @param DirectoryIterator $dir
+     * etc...
+     */
     private function contentCrawler( DirectoryIterator $dir, $request, $uri = array(), $path = array() )
     {
         $data = array();
@@ -90,6 +109,12 @@ class Crawler {
         return $data;
     }
 
+    /**
+     * Get metadata
+     *
+     * @param array $path Path to file
+     * @return array Metadata
+     */
     private function getMetadata($path)
     {
         $file = array();
@@ -100,6 +125,13 @@ class Crawler {
         return ( isset($file['metadata']) ? $file['metadata'] : false );
     }
 
+    /**
+     * Create URI
+     *
+     * @param array $path Path to file
+     * @param array $metadata File's metadata
+     * @return string Uri
+     */
     private function createUri($path, $metadata)
     {
         if ($metadata && isset($metadata['url'])) {
@@ -109,12 +141,26 @@ class Crawler {
         }
     }
 
+    /**
+     * Create index record
+     *
+     * @param array or string $path Path to index.txt file
+     * @param array $uri Uri that matches index.txt file
+     */
     private function createIndex($path, $uri)
     {
         $path[] = 'index.txt';
         $this->index[Filters::arrayToUri($uri)] = Filters::arrayToPath($path);
     }
 
+    /**
+     * Create navigation item
+     *
+     * @param array $request Current request URI
+     * @param array $uri URI from current navigation item
+     * @param array $metadata Current navigation item's metadata
+     * @return array Navigation item
+     */
     private function createNavigation($request, $uri, $metadata)
     {
         $data = array();

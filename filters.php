@@ -11,8 +11,12 @@ namespace Robodt;
 
 class Filters
 {
+
+
     /**
      * Validators
+     * 
+     * @return boolean
      */
 
     static function validateUrl($url)
@@ -40,10 +44,18 @@ class Filters
         return filter_var($email, FILTER_VALIDATE_EMAIL);
     }
 
+
+
     /**
      * Sanitizers
      */
 
+    /**
+     * Sanitize URI
+     *
+     * @param array or string $uri
+     * @return array Filtered URI
+     */
     static function sanitizeUri($uri)
     {
         $uri = self::arrayToUri($uri);
@@ -53,10 +65,18 @@ class Filters
         return self::uriToArray($uri);
     }
 
+
+
     /**
      * Convertors
      */
 
+    /**
+     * From path to uri
+     *
+     * @param string $path
+     * @return string URI generated from path name
+     */
     static function pathToUri($path)
     {
         $path = explode('.', $path);
@@ -88,16 +108,34 @@ class Filters
         return ( is_array($uri) ? implode('/', $uri) : $uri );
     }
 
+    /**
+     * From URI to array
+     *
+     * @param string $uri
+     * @return array Same URI as input
+     */
     static function uriToArray($uri)
     {
         return explode('/', $uri);
     }
 
+    /**
+     * From path to array
+     *
+     * @param string $path
+     * @return array Same path as input
+     */
     static function pathToArray($path)
     {
         return explode(DIRECTORY_SEPARATOR, $path);
     }
 
+    /**
+     * Remove URI prefix slash
+     *
+     * @param string or array $uri
+     * @return string Same uri as input
+     */
     static function uriRemovePrefix($uri)
     {
         $uri = self::arrayToUri($uri);
