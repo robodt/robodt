@@ -3,13 +3,19 @@
 	"type": "library",
 	"description": "Flexible and lightweight file-based markdown CMS",
 	"keywords": ["cms", "markdown", "file-based", "robodt"],
-	"homepage": "http://robodt.io/",
+	"homepage": "http://robodt.io",
 	"authors": [
 		{
 			"name": "Tim van Bergenhenegouwen",
-			"email": "",
-			"homepage": "http://zomnium.com/",
+			"email": "tim@slurfhondje.nl",
+			"homepage": "http://zomnium.com",
 			"role": "Developer"
+		}
+	],
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/robodt/robodt"
 		}
 	],
 	"require": {
