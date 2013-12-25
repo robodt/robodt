@@ -18,7 +18,6 @@ class Crawler
     protected $content;
     protected $dir;
     protected $index;
-    // protected $cache;
 
     public function __construct()
     {
@@ -38,7 +37,6 @@ class Crawler
         $dir = $this->createDirectoryObject($dir);
         $data = $this->contentCrawler($dir, $request);
         $data['index'] = $this->index;
-        // $data['cache'] = $this->cache;
         return $data;
     }
 
@@ -56,8 +54,11 @@ class Crawler
     /**
      * Content crawler
      *
-     * @param DirectoryIterator $dir
-     * etc...
+     * @param DirectoryIterator $dir Directory path to crawl
+     * @param array $request Current requested uri
+     * @param array $uri Current uri from root/home
+     * @param array $path Current path from root directory
+     * @return array
      */
     private function contentCrawler( DirectoryIterator $dir, $request, $uri = array(), $path = array() )
     {
