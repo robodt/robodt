@@ -10,8 +10,6 @@
 namespace Robodt;
 
 use Robodt\Filters;
-use Robodt\Hooks;
-use Robodt\Actions;
 use Robodt\Settings;
 use Robodt\Crawler;
 use Robodt\Content;
@@ -19,22 +17,31 @@ use Robodt\Content;
 class Robodt
 {
     public $hooks;
-    public $actions;
+    public $logs;
+
     protected $settings;
-    protected $crawler;
-    protected $content;
     protected $api;
     protected $navigation;
     protected $site;
 
-    public function __construct($site)
+    protected $crawler;
+    protected $content;
+
+    public function __construct(array $config = array())
     {
-        $this->site = $site;
-        $this->hooks = new Hooks;
-        $this->actions = new Actions;
+        // Initialize config and defaults
+        $this->site = ( isset($config['site']) ? $config['site'] : __dir__ . '/../../../../../site/' );
+        $this->hooks = ( isset($config['hooks']) ? $config['hooks'] : new \Robodt\Hooks );
         $this->settings = new Settings;
+
+        // Yet to be implemented
+        // $this->logs = ( isset($config['logs']) ? $config['logs'] : new \Robodt\Logs );
+
+        // Change implementations
         $this->crawler = new Crawler;
         $this->content = new Content;
+
+        // Init
         $this->api = array();
         $this->registerHooks();
     }
@@ -44,9 +51,8 @@ class Robodt
      */
     private function registerHooks()
     {
-        $this->hooks->register('init', 'loadSettings', $this, 100);
-        $this->hooks->register('request.prerender', 'loadApi', $this, 100);
-        $this->hooks->register('request.render', 'renderRequest', $this, 100);
+        $this->hooks->register('robodt.init', 'loadSettings', $this, 100);
+        $this->hooks->register('robodt.render', 'render', $this, 100);
     }
 
     /**
@@ -66,19 +72,11 @@ class Robodt
     }
 
     /**
-     * Collect API data
-     */
-    public function loadApi()
-    {
-        $this->api['settings'] = $this->settings->get_all();
-    }
-
-    /**
      * Parse requested page from file
      * 
      * @param array $uri Uri from request
      */
-    public function renderRequest($uri)
+    public function render($uri)
     {
         $file = array();
         $file[] = Filters::arrayToPath( array( $this->site, 'content' ) );
@@ -93,6 +91,7 @@ class Robodt
             $file[] = 'index.txt';
         }
 
+        $this->api['settings'] = $this->settings->get_all();
         $this->api['request'] = $this->content->parseFile($file);
         $this->api['request']['uri'] = $uri;
         $this->api['request']['file'] = $file;
@@ -105,13 +104,13 @@ class Robodt
      * @param string $site Hostname - optional
      * @return array API data
      */
-    public function render($uri)
+    public function get($uri)
     {
         $uri = Filters::sanitizeUri($uri);
-        $this->hooks->execute('init');
-        $this->hooks->execute('request.prerender');
-        $this->hooks->execute('request.render', array($uri));
-        $this->hooks->execute('request.postrender');
+        $this->hooks->execute('robodt.init');
+        $this->hooks->execute('robodt.prerender');
+        $this->hooks->execute('robodt.render', array($uri));
+        $this->hooks->execute('robodt.postrender');
         return $this->api();
     }
 
