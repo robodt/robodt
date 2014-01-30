@@ -37,7 +37,23 @@ class Crawler
         $dir = $this->createDirectoryObject($dir);
         $data = $this->contentCrawler($dir, $request);
         $data['index'] = $this->index;
+        $data['dev'] = $this->mapper($data['tree']);
         return $data;
+    }
+
+    private function mapper($tree)
+    {
+        return array_map(array($this, 'map'), $tree);
+    }
+
+    private function map($node)
+    {
+        // print $node . "<br />\n";
+        if (is_array($node)) {
+            print "next<br />\n";
+            return $this->mapper($node);
+        }
+        return $node;
     }
 
     /**
