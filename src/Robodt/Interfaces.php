@@ -20,6 +20,15 @@ interface RobodtRouter
     public function put($route, $callback);
 
     public function delete($route, $callback);
+
+    // Abstractions:
+    // - parameters
+    // - wildcard
+    // - optional parameters
+    // - conditions
+    // - route names (generating urls)
+    // - generate url helper(s)
+    // - middleware?
 }
 
 interface RobodtLogger
@@ -54,6 +63,19 @@ interface RobodtViews
     public function get();
 
     public function set();
+}
+
+interface RobodtData
+{
+    /* data and active records */
+
+    public function get();
+
+    public function find();
+
+    public function set();
+
+    public function delete();
 }
 
     // Interface?
