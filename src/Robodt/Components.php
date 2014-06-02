@@ -77,24 +77,11 @@ class Components
     }
 
     /**
-     * Set a Robodt component
-     *
-     * @param string $component 
-     * @param object $resource
-     * @return null
-     */
-    public function setRobodtComponent($component, $resource)
-    {
-        // $this->robodt->setComponent($component, $resource);
-    }
-
-    /**
      * Hooks component
      */
     public function setHooks(RobodtHooks $hooks)
     {
         $this->set('hooks', $hooks);
-        $this->setRobodtComponent('hooks', $hooks);
     }
 
     /**
@@ -103,7 +90,6 @@ class Components
     public function setLogger(RobodtLogger $logger)
     {
         $this->set('log', $logger);
-        $this->setRobodtComponent('logger', $logger);
     }
 
     /**
