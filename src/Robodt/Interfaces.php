@@ -9,60 +9,11 @@
 
 namespace Robodt;
 
-interface RobodtRouter
-{
-    /* routing */
-
-    public function get($route, $callback);
-
-    public function post($route, $callback);
-
-    public function put($route, $callback);
-
-    public function delete($route, $callback);
-
-    // Abstractions:
-    // - parameters
-    // - wildcard
-    // - optional parameters
-    // - conditions
-    // - route names (generating urls)
-    // - generate url helper(s)
-    // - middleware?
-}
-
-interface RobodtLogger
-{
-    /* logging */
-
-    public function add($record);
-}
-
-interface RobodtHooks
-{
-    /* hooks */
-
-    public function set($name, $callback);
-
-    public function remove($name);
-
-    public function apply($name);
-}
-
 interface RobodtErrorhandling
 {
     /* error handling */
 
     public function error();
-}
-
-interface RobodtViews
-{
-    /* theming */
-
-    public function get();
-
-    public function set();
 }
 
 interface RobodtData

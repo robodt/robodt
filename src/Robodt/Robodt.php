@@ -4,124 +4,148 @@
  * Robodt - Markdown CMS
  * @author      Zomnium
  * @link        http://www.zomnium.com
- * @copyright   2013 Zomnium, Tim van Bergenhenegouwen
+ * @copyright   2014 Zomnium, Tim van Bergenhenegouwen
  */
 
 namespace Robodt;
 
-use Robodt\Filters;
-use Robodt\Settings;
-use Robodt\Crawler;
-use Robodt\Content;
-
 class Robodt
 {
-    public $hooks;
-    public $logs;
+    private static $instance;
+    private $components;
+    public $framework;
 
-    protected $settings;
-    protected $api;
-    protected $navigation;
-    protected $site;
-
-    protected $crawler;
-    protected $content;
-
-    public function __construct(array $config = array())
+    /**
+     * Constructor
+     *
+     * @param array Core settings and components
+     * @return null
+     */
+    public function __construct(array $settings = array())
     {
-        // Initialize config and defaults
-        $this->site = ( isset($config['site']) ? $config['site'] : __dir__ . '/../../../../../site/' );
-        $this->hooks = ( isset($config['hooks']) ? $config['hooks'] : new \Robodt\Hooks );
-        $this->settings = new Settings;
+        // Create singleton instance
+        self::$instance = $this;
 
-        // Yet to be implemented
-        // $this->logs = ( isset($config['logs']) ? $config['logs'] : new \Robodt\Logs );
+        // Register core components
+        $this->framework = ( isset($settings['framework']) ? new $settings['framework'] : new \Slim\Slim );
+        $this->setHooks( isset($settings['hooks']) ? new $settings['hooks'] : new \Robodt\Components\SlimHooks );
+        $this->setLogger( isset($settings['logger']) ? new $settings['logger'] : new \Robodt\Components\SlimLogger );
+        $this->setRouter( isset($settings['router']) ? new $settings['router'] : new \Robodt\Components\SlimRouter );
+        $this->setViews( isset($settings['views']) ? new $settings['views'] : new \Robodt\Components\SlimViews );
 
-        // Change implementations
-        $this->crawler = new Crawler;
-        $this->content = new Content;
+        // Create process
+        $this->set('process', new \Robodt\Process);
+        $this->get('process')->register('render', $this->framework->run, $this);
+        // init
+        // prerender
+        // render
+        // postrender
+        // exit
 
-        // Init
-        $this->api = array();
-        $this->registerHooks();
+        // Overwrite optional components and set aditional
+        if (isset($settings['components']))
+            $this->setComponents($settings['components']);
     }
 
     /**
-     * Register main hooks
+     * Get Singleton instance from this class
+     *
+     * @return object Instance
      */
-    private function registerHooks()
+    public static function getInstance()
     {
-        $this->hooks->register('robodt.init', 'loadSettings', $this, 100);
-        $this->hooks->register('robodt.render', 'render', $this, 100);
+        return self::$instance;
     }
 
     /**
-     * Load main settings
+     * Set component(s)
+     *
+     * @param string or array $companent Component name or key value array
+     * @param object $resource Component class or null when $component is an array
+     * @return object Component or null
      */
-    public function loadSettings()
+    public function set($component, $resource = null)
     {
-        $this->settings->load(
-            Filters::arrayToPath(
-                array(
-                    $this->site,
-                    'settings',
-                    'settings.php'
-                    )
-                )
-            );
-    }
-
-    /**
-     * Parse requested page from file
-     * 
-     * @param array $uri Uri from request
-     */
-    public function render($uri)
-    {
-        $file = array();
-        $file[] = Filters::arrayToPath( array( $this->site, 'content' ) );
-        $request = Filters::arrayToUri( $uri );
-
-        $this->api = array_merge($this->api, $this->crawler->indexContent( $file[0], $uri ) );
-
-        if (isset( $this->api['index'][ $request ] ) ) {
-            $file[] = $this->api['index'][ $request ];
-        } else {
-            $file[] = '404';
-            $file[] = 'index.txt';
+        // Register multiple components
+        if (is_array($component) && $resource == null)
+        {
+            foreach ($component as $namespace => $resource)
+            {
+                $this->set($namespace, $resource);
+            }
         }
 
-        $this->api['settings'] = $this->settings->get_all();
-        $this->api['request'] = $this->content->parseFile($file);
-        $this->api['request']['uri'] = $uri;
-        $this->api['request']['file'] = $file;
+        // Register single component
+        else
+        {
+            return $this->components[$component] = new $resource;
+        }
     }
 
     /**
-     * Execute all important hooks to render request
-     * 
-     * @param array $uri HTTP request uri
-     * @param string $site Hostname - optional
-     * @return array API data
+     * Isset component(s)
      */
-    public function get($uri)
-    {
-        $uri = Filters::sanitizeUri($uri);
-        $this->hooks->execute('robodt.init');
-        $this->hooks->execute('robodt.prerender');
-        $this->hooks->execute('robodt.render', array($uri));
-        $this->hooks->execute('robodt.postrender');
-        return $this->api();
+    public function exists($components) {
+        if (is_array($components)) {
+            foreach ($components as $namespace) {
+                $component[$namespace] = $this->isset($namespace);
+            }
+            return $components;
+        }
+        else
+        {
+            return isset($this->components[$components]);
+        }
     }
 
     /**
-     * Get API data
-     * 
-     * @return array API data
+     * Get component from register
+     *
+     * @param string $namespace Name for register lookup
+     * @return object Component class
      */
-    public function api()
+    public function get($namespace)
     {
-        return $this->api;
+        return ($this->exists($namespace)) ? $this->components[$namespace] : false;
     }
 
+    /**
+     * Hooks component
+     */
+    public function setHooks(Components\RobodtHooks $hooks)
+    {
+        $this->set('hooks', $hooks);
+    }
+
+    /**
+     * Logger component
+     */
+    public function setLogger(Components\RobodtLogger $logger)
+    {
+        $this->set('log', $logger);
+    }
+
+    /**
+     * Router component
+     */
+    public function setRouter(Components\RobodtRouter $router)
+    {
+        $this->set('router', $router);
+    }
+
+    /**
+     * Views component
+     */
+    public function setViews(Components\RobodtViews $views)
+    {
+        $this->set('views', $views);
+    }
+
+    /**
+     * Run application
+     */
+    public function run()
+    {
+        $this->framework->run();
+    }
 }
