@@ -34,8 +34,8 @@ class Robodt
         $this->setViews( isset($settings['views']) ? new $settings['views'] : new \Robodt\Components\SlimViews );
 
         // Create process
-        $this->set('process', new \Robodt\Process);
-        $this->get('process')->register('render', $this->framework->run(), $this);
+        // $this->set('process', new \Robodt\Process);
+        // $this->get('process')->register('render', $this->framework->run(), $this);
         // init
         // prerender
         // render
