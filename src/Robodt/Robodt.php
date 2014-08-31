@@ -13,7 +13,7 @@ class Robodt
 {
     private static $instance;
     private $components;
-    public $framework;
+    private $framework;
 
     /**
      * Constructor
