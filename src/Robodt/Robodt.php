@@ -33,7 +33,7 @@ class Robodt
         $this->setRouter( isset($settings['router']) ? new $settings['router'] : new \Robodt\Components\SlimRouter );
         $this->setViews( isset($settings['views']) ? new $settings['views'] : new \Robodt\Components\SlimViews );
 
-        // Create process
+        // TODO: Create process
         // $this->set('process', new \Robodt\Process);
         // $this->get('process')->register('render', $this->framework->run(), $this);
         // init
@@ -158,6 +158,7 @@ class Robodt
 
     /**
      * Run application
+     * TODO: reimplement this more flexible
      */
     public function run()
     {
