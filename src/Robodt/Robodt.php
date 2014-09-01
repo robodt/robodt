@@ -84,6 +84,9 @@ class Robodt
 
     /**
      * Isset component(s)
+     *
+     * @param string or array $components
+     * @return object or array
      */
     public function exists($components) {
         if (is_array($components)) {
@@ -111,6 +114,9 @@ class Robodt
 
     /**
      * Hooks component
+     *
+     * @param string $hooks Class for implementation of hooks
+     * @return null
      */
     public function setHooks(Components\RobodtHooks $hooks)
     {
@@ -119,6 +125,9 @@ class Robodt
 
     /**
      * Logger component
+     *
+     * @param string $logger Class for implementation of logger
+     * @return null
      */
     public function setLogger(Components\RobodtLogger $logger)
     {
@@ -127,6 +136,9 @@ class Robodt
 
     /**
      * Router component
+     *
+     * @param string $router Class for implementation of router
+     * @return null
      */
     public function setRouter(Components\RobodtRouter $router)
     {
@@ -135,6 +147,9 @@ class Robodt
 
     /**
      * Views component
+     *
+     * @param string $views Class for implementation of views
+     * @return null
      */
     public function setViews(Components\RobodtViews $views)
     {
